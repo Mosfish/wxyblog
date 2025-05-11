@@ -2,118 +2,66 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://mosfish.github.io/wxyblog/zh-cn/</loc>
-    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
+    <loc>https://mosfish.github.io/wxyblog/</loc>
+    <lastmod>2025-05-11T21:33:12+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
+                href="https://mosfish.github.io/wxyblog/en/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
                 href="https://mosfish.github.io/wxyblog/"
                 />
+  </url><url>
+    <loc>https://mosfish.github.io/wxyblog/categories/</loc>
+    <lastmod>2025-05-11T21:33:12+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
-                hreflang="ar"
-                href="https://mosfish.github.io/wxyblog/ar/"
+                hreflang="en"
+                href="https://mosfish.github.io/wxyblog/en/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="https://mosfish.github.io/wxyblog/zh-cn/"
-                />
-  </url><url>
-    <loc>https://mosfish.github.io/wxyblog/zh-cn/categories/</loc>
-    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
                 href="https://mosfish.github.io/wxyblog/categories/"
                 />
+  </url><url>
+    <loc>https://mosfish.github.io/wxyblog/post/</loc>
+    <lastmod>2025-05-11T21:33:12+08:00</lastmod>
+  </url><url>
+    <loc>https://mosfish.github.io/wxyblog/categories/%E6%9C%AC%E7%A7%91/</loc>
+    <lastmod>2025-05-11T21:33:12+08:00</lastmod>
+  </url><url>
+    <loc>https://mosfish.github.io/wxyblog/categories/%E7%94%9F%E6%B4%BB%E6%97%A5%E8%AE%B0/</loc>
+    <lastmod>2025-05-11T21:33:12+08:00</lastmod>
+  </url><url>
+    <loc>https://mosfish.github.io/wxyblog/p/%E5%AE%9E%E9%AA%8C%E6%A5%BC%E7%9A%84%E7%8C%AB/</loc>
+    <lastmod>2025-05-11T21:33:12+08:00</lastmod>
+  </url><url>
+    <loc>https://mosfish.github.io/wxyblog/page/</loc>
+    <lastmod>2019-05-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://mosfish.github.io/wxyblog/archives/</loc>
+    <lastmod>2019-05-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://mosfish.github.io/wxyblog/tags/</loc>
     <xhtml:link
                 rel="alternate"
-                hreflang="ar"
-                href="https://mosfish.github.io/wxyblog/ar/categories/"
+                hreflang="en"
+                href="https://mosfish.github.io/wxyblog/en/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="https://mosfish.github.io/wxyblog/zh-cn/categories/"
-                />
-  </url><url>
-    <loc>https://mosfish.github.io/wxyblog/zh-cn/p/test-chinese/</loc>
-    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://mosfish.github.io/wxyblog/zh-cn/post/</loc>
-    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://mosfish.github.io/wxyblog/post/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="ar"
-                href="https://mosfish.github.io/wxyblog/ar/post/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://mosfish.github.io/wxyblog/zh-cn/post/"
-                />
-  </url><url>
-    <loc>https://mosfish.github.io/wxyblog/zh-cn/categories/test/</loc>
-    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://mosfish.github.io/wxyblog/categories/test/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://mosfish.github.io/wxyblog/zh-cn/categories/test/"
-                />
-  </url><url>
-    <loc>https://mosfish.github.io/wxyblog/zh-cn/categories/%E6%B5%8B%E8%AF%95/</loc>
-    <lastmod>2020-09-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://mosfish.github.io/wxyblog/zh-cn/page/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://mosfish.github.io/wxyblog/page/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://mosfish.github.io/wxyblog/zh-cn/page/"
-                />
-  </url><url>
-    <loc>https://mosfish.github.io/wxyblog/zh-cn/tags/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
                 href="https://mosfish.github.io/wxyblog/tags/"
                 />
-    <xhtml:link
-                rel="alternate"
-                hreflang="ar"
-                href="https://mosfish.github.io/wxyblog/ar/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://mosfish.github.io/wxyblog/zh-cn/tags/"
-                />
   </url><url>
-    <loc>https://mosfish.github.io/wxyblog/zh-cn/%E5%85%B3%E4%BA%8E/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://mosfish.github.io/wxyblog/about/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://mosfish.github.io/wxyblog/zh-cn/%E5%85%B3%E4%BA%8E/"
-                />
+    <loc>https://mosfish.github.io/wxyblog/%E5%85%B3%E4%BA%8E/</loc>
+  </url><url>
+    <loc>https://mosfish.github.io/wxyblog/search/</loc>
+  </url><url>
+    <loc>https://mosfish.github.io/wxyblog/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/</loc>
   </url>
 </urlset>

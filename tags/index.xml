@@ -1,68 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Tags on Example Site</title>
+        <title>Tags on 蚊香鱼的Blog</title>
         <link>https://mosfish.github.io/wxyblog/tags/</link>
-        <description>Recent content in Tags on Example Site</description>
+        <description>Recent content in Tags on 蚊香鱼的Blog</description>
         <generator>Hugo -- gohugo.io</generator>
-        <language>en</language>
-        <copyright>Example Person</copyright>
-        <lastBuildDate>Mon, 11 Mar 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://mosfish.github.io/wxyblog/tags/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Css</title>
-        <link>https://mosfish.github.io/wxyblog/tags/css/</link>
-        <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
-        
-        <guid>https://mosfish.github.io/wxyblog/tags/css/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Html</title>
-        <link>https://mosfish.github.io/wxyblog/tags/html/</link>
-        <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
-        
-        <guid>https://mosfish.github.io/wxyblog/tags/html/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Markdown</title>
-        <link>https://mosfish.github.io/wxyblog/tags/markdown/</link>
-        <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
-        
-        <guid>https://mosfish.github.io/wxyblog/tags/markdown/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Themes</title>
-        <link>https://mosfish.github.io/wxyblog/tags/themes/</link>
-        <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
-        
-        <guid>https://mosfish.github.io/wxyblog/tags/themes/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Tag With Whitespaces</title>
-        <link>https://mosfish.github.io/wxyblog/tags/tag-with-whitespaces/</link>
-        <pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate>
-        
-        <guid>https://mosfish.github.io/wxyblog/tags/tag-with-whitespaces/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Text</title>
-        <link>https://mosfish.github.io/wxyblog/tags/text/</link>
-        <pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate>
-        
-        <guid>https://mosfish.github.io/wxyblog/tags/text/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Emoji</title>
-        <link>https://mosfish.github.io/wxyblog/tags/emoji/</link>
-        <pubDate>Tue, 05 Mar 2019 00:00:00 +0000</pubDate>
-        
-        <guid>https://mosfish.github.io/wxyblog/tags/emoji/</guid>
-        <description></description>
-        </item>
-        
+        <language>zh-cn</language>
+        <copyright>Xiangyu Wen</copyright><atom:link href="https://mosfish.github.io/wxyblog/tags/index.xml" rel="self" type="application/rss+xml" />
     </channel>
 </rss>
