@@ -21,7 +21,7 @@
         (function() {
             const colorSchemeKey = 'StackColorScheme';
             if(!localStorage.getItem(colorSchemeKey)){
-                localStorage.setItem(colorSchemeKey, "auto");
+                localStorage.setItem(colorSchemeKey, "dark");
             }
         })();
     </script><script>
@@ -413,7 +413,7 @@
     }());
 </script>
 <script>
-  const cdnPath = "https://cdn.jsdelivr.net/gh/Mosfish/stb@v1.2";
+  const cdnPath = "https://cdn.jsdelivr.net/gh/Mosfish/stb@v1.5";
   const tipsJsPath = "https://mosfish.github.io/wxyblog/waifu/waifu-tips.js"
   const live2dJsPath = "https://mosfish.github.io/wxyblog/waifu/live2d.min.js"
   const config = {
@@ -479,6 +479,13 @@
     });
   }
 </script>
+<style>
+  body {
+    background: url(https://mosfish.github.io/wxyblog/background/bac.png) no-repeat center top;
+    background-size: cover;
+    background-attachment: fixed;
+  }
+</style>
 
     </body>
 </html>
