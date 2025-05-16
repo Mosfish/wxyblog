@@ -273,7 +273,14 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#neural-networksnns">Neural Networks(NNs)</a></li>
+    <li><a href="#neural-networksnns">Neural Networks(NNs)</a>
+      <ol>
+        <li><a href="#基础架构">基础架构</a></li>
+        <li><a href="#响应responding-derivatives">响应(Responding derivatives)</a></li>
+        <li><a href="#权重weight">权重(Weight)</a></li>
+      </ol>
+    </li>
+    <li><a href="#bayesian-neural-networks">Bayesian Neural Networks</a></li>
   </ol>
 </nav>
         </div>
@@ -343,12 +350,13 @@
     <section class="article-content">
     
     
-    <h1 id="bayesian-neural-networks">Bayesian Neural Networks
+    <h1 id="bnns学习入门">BNNs学习入门
 </h1><p>贝叶斯神经网络(Bayesian Neural Networks)，相较于CNN之类的神经网络，输入单点数据、输出单点数据，贝叶斯神经网络可以输入一段概率分布，经过训练后可以生成一个输出的概率分布。所以采用贝叶斯的方式，模型训练后就可以变成——输入一个东西，而输出一个概率分布。在综述<code>Bayesian Neural Networks: An Introduction and Survey</code>中提到，概率方法(BNN)提供的输出分布有助于开发可信模型，因其能识别预测中的不确定性，这当然也有一个范围哈。本学习笔记考虑了几个<strong>Literature Survey</strong>和技术博客进行总结，非常感谢作者们的分享~</p>
 <blockquote>
 <p>原文：Bayesian methods for performing regression with that of a simple neural network, and illustrates the importance of measuring uncertainty. While both methods perform well within the bounds of the training data, where extrapolation is required, the probabilistic method provides a full distribution of the function output as opposed to the point estimates provided by the NN. The distribution over outputs provided by probabilistic methods allows for the development of trustworthy models, in that they can identify uncertainty in a prediction. Given that NNs are the most promising model for generating AI systems, it is important that we can similarly trust their predictions.</p></blockquote>
 <h2 id="neural-networksnns">Neural Networks(NNs)
-</h2><p>在讨论BNNs前还是先了解一下NN的结构。神经网络的基础架构——<strong>Multi-Layer Perceptron (MLP) network</strong>，现代网络结构（如卷积网络）都具有等效的多层感知表示形式。简单的MLP搭建如下，输入$\phi$和输出$f$分别如下：
+</h2><h3 id="基础架构">基础架构
+</h3><p>在讨论BNNs前还是先了解一下NN的结构。神经网络的基础架构——<strong>Multi-Layer Perceptron (MLP) network</strong>，现代网络结构（如卷积网络）都具有等效的多层感知表示形式。简单的MLP搭建如下，输入$\phi$和输出$f$分别如下：
 </p>
 $$
 \phi_j = \sum_{i=1}^{N_1}a(x_iw_{ij}^1) \tag{1}\\
@@ -356,9 +364,23 @@ f_k = \sum_{j=1}^{N_2}g(\phi_jw_{jk}^2)
 $$<p>
 示意图如下，中间为隐藏层，每个节点代表一个神经元或执行输入状态求和与激活的状态，箭头表示神经元间连接强度的参数（权重）：</p>
 <div align=center><img src="1.png" width=300/></div>
-<center><font face="黑体" size=2>用于二元分类或一维回归的具有单个隐藏层的神经网络架构示例</font></center>
-<p>其中Activation function（激活函数），类似于第一个公式，仿射变换+非线性变换$\phi(.)$，曾经是由$sign(.)$函数来表示，后来逐渐被Sigmoid, Hyperbolic Tangent (TanH), Rectified Linear Unit (ReLU) 和 Leaky-ReLU这几个函数取代。</p>
-
+<center><font size=2>用于二元分类或一维回归的具有单个隐藏层的神经网络架构示例</font></center>
+<p>其中Activation function（激活函数），类似于第一个公式，仿射变换+非线性变换$\phi(.)$，曾经是由$sign(.)$函数来表示，后来逐渐被Sigmoid, Hyperbolic Tangent (TanH), Rectified Linear Unit (ReLU) 和 Leaky-ReLU这几个函数取代。激活函数是很重要的一个概念，其图示如下，蓝色表示函数，红色表示函数的数值导数，</p>
+<div align=center><img src="2.png" width=300/></div>
+<center><font size=2>激活函数，(a) Sigmoid; (b) TanH; (c)ReLU; (d) Leaky-ReLU</font></center>
+<h3 id="响应responding-derivatives">响应(Responding derivatives)
+</h3><p>使用Sigmoid函数时，原表达式等价于逻辑回归，那么网络的输出成为多个逻辑回归模型的总和。 对于回归模型函数$g(.)$将是恒等函数；二元分类则采用Sigmoid函数。其实公式(1)用矩阵表达更简便，前向传播过程(<strong>Forward propagation</strong>)可以表示为
+</p>
+$$
+\mathbf{\Phi} = a(\mathbf{X^T W^1}) \tag{2}\\
+\mathbf{F} = g(\mathbf{\Phi W^2})
+$$<h3 id="权重weight">权重(Weight)
+</h3><p>以<strong>反向传播</strong>实现<strong>成本函数</strong>最<strong>小</strong>化：基于当前参数设置计算模型输出值，再求得各参数对应的偏导数，随后利用这些导数对每个参数进行迭代更新，其中$\alpha$表示学习率，迭代过程可以描述为：
+</p>
+$$
+w_{t+i} = w_t - \alpha\frac{ \partial J(x,y) }{ \partial w_t }. \tag{3}
+$$<h2 id="bayesian-neural-networks">Bayesian Neural Networks
+</h2>
 </section>
 
 
