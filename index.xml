@@ -45,7 +45,7 @@ w_{t+i} = w_t - \alpha\frac{ \partial J(x,y) }{ \partial w_t }. \tag{3}
 $$&lt;h2 id=&#34;bayesian-neural-networks&#34;&gt;Bayesian Neural Networks
 &lt;/h2&gt;&lt;blockquote&gt;
 &lt;p&gt;贝叶斯统计学派正是采用这种视角——将未知（或潜在）参数作为随机变量处理，并致力于通过训练数据中可观测的信息，学习这些参数的条件概率分布。&lt;/p&gt;&lt;/blockquote&gt;
-&lt;p&gt;这句翻译其实就是BNN的核心思想，考虑到BNN的学习过程中要通过已知数据来推测未知权重，这属于&lt;strong&gt;逆概率&lt;/strong&gt;问题，所以可以用贝叶斯定理解决，观测概率来表示这些&lt;strong&gt;权重&lt;/strong&gt; $\mathbf{\omega}$ 的分布，最终得到基于**观测数据 $D$ **的条件参数分布 $p(\omega, D)$ ，称之为后验分布(Posterior distribution)。&lt;/p&gt;
+&lt;p&gt;这句翻译其实就是BNN的核心思想，考虑到BNN的学习过程中要通过已知数据来推测未知权重，这属于&lt;strong&gt;逆概率&lt;/strong&gt;问题，所以可以用贝叶斯定理解决，观测概率来表示这些&lt;strong&gt;权重&lt;/strong&gt; $\mathbf{\omega}$ 的分布，最终得到基于**观测数据 **$D$ 的条件参数分布 $p(\omega, D)$ ，称之为后验分布(Posterior distribution)。&lt;/p&gt;
 </description>
         </item>
         <item>
@@ -243,10 +243,7 @@ $$&lt;h2 id=&#34;bayesian-neural-networks&#34;&gt;Bayesian Neural Networks
 &lt;div align=center&gt;&lt;img src=&#34;16.jpg&#34; width=200/&gt;&lt;/div&gt;
 &lt;center&gt;&lt;font size=2&gt;落地，休整，健身，蹭饭&lt;/font&gt;&lt;/center&gt;
 &lt;h2 id=&#34;西电交流代表上桌&#34;&gt;西电交流——代表、上桌！
-&lt;/h2&gt;&lt;p&gt;首日，由于我们是第一批，天大寒、砚冰坚，雨夹雪实在有些冷人了。起初进不去，找了迪卡侬取取暖。&lt;/p&gt;
-&lt;div align=center&gt;&lt;img src=&#34;13.jpg&#34; width=150/&gt;&lt;/div&gt;
-&lt;center&gt;&lt;font size=2&gt;遮风避雨好去处——迪卡侬&lt;/font&gt;&lt;/center&gt;
-&lt;p&gt;首日去了西电的研究生校区进行交流，后来发现我们的交流具有现实意义——&lt;strong&gt;学硕、专硕与工程博士的区分设立&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;首日，由于我们是第一批，天大寒、砚冰坚，雨夹雪实在有些冷人了。起初进不去，找了迪卡侬取取暖。首日去了西电的研究生校区进行交流，后来发现我们的交流具有现实意义——&lt;strong&gt;学硕、专硕与工程博士的区分设立&lt;/strong&gt;。&lt;/p&gt;
 &lt;div align=center&gt;&lt;img src=&#34;3.jpg&#34; width=200/&gt;&lt;img src=&#34;15.jpg&#34; width=200/&gt;&lt;/div&gt;
 &lt;center&gt;&lt;font size=2&gt;也是有资格上桌交流了&lt;/font&gt;&lt;/center&gt;
 &lt;h2 id=&#34;西交交流创新港偷摸鱼&#34;&gt;西交交流——创新港，偷摸鱼
