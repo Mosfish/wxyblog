@@ -13,7 +13,7 @@
         <pubDate>Fri, 23 May 2025 12:45:04 +0800</pubDate>
         
         <guid>https://mosfish.github.io/wxyblog/p/5g%E6%A0%B8%E5%BF%83%E7%BD%91%E9%83%A8%E7%BD%B2%E5%8F%8A%E6%B5%8B%E8%AF%95%E6%89%8B%E5%86%8C/</guid>
-        <description>&lt;h1 id=&#34;free5gc核心网部署与接入测试手册&#34;&gt;Free5GC核心网部署与接入测试手册
+        <description>&lt;img src="https://mosfish.github.io/wxyblog/p/5g%E6%A0%B8%E5%BF%83%E7%BD%91%E9%83%A8%E7%BD%B2%E5%8F%8A%E6%B5%8B%E8%AF%95%E6%89%8B%E5%86%8C/11111.png" alt="Featured image of post 5G核心网部署及测试手册" /&gt;&lt;h1 id=&#34;free5gc核心网部署与接入测试手册&#34;&gt;Free5GC核心网部署与接入测试手册
 &lt;/h1&gt;&lt;p&gt;&lt;font size=4 color=&#34;red&#34;&gt; &lt;strong&gt;写在开篇&lt;/strong&gt;：&lt;/font&gt;&lt;font size=4 color=&#34;red&#34;&gt; 建议养成&lt;strong&gt;备份&lt;/strong&gt;（例如git工具）的好习惯。本文包含Linux开发基础内容、free5gc核心网&lt;/font&gt;&lt;/p&gt;
 &lt;p&gt;==考虑到版权问题，本文章如需要转载请进行声明==&lt;/p&gt;
 &lt;p&gt;起初使用&lt;strong&gt;VMware虚拟机装的Ubuntu桌面版系统&lt;/strong&gt;，但是实际工程需要&lt;strong&gt;板载Linux系统&lt;/strong&gt;（但是学习初期直接上手，容易因为不熟悉操作而出现诸如网卡连不了网，没声音，拼音输入法等软硬件不适配类似的各种问题）可以&lt;strong&gt;先基于虚拟机进行学习&lt;/strong&gt;，入门后再基于板载Linux系统开发核心网。&lt;/p&gt;
@@ -1526,7 +1526,7 @@
         <pubDate>Fri, 16 May 2025 19:21:25 +0800</pubDate>
         
         <guid>https://mosfish.github.io/wxyblog/p/bnns%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/</guid>
-        <description>&lt;h1 id=&#34;bnns学习入门&#34;&gt;BNNs学习入门
+        <description>&lt;img src="https://mosfish.github.io/wxyblog/p/bnns%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/11111.png" alt="Featured image of post BNNs入门学习" /&gt;&lt;h1 id=&#34;bnns学习入门&#34;&gt;BNNs学习入门
 &lt;/h1&gt;&lt;p&gt;贝叶斯神经网络(Bayesian Neural Networks)，相较于CNN之类的神经网络，输入单点数据、输出单点数据，贝叶斯神经网络可以输入一段概率分布，经过训练后可以生成一个输出的概率分布。所以采用贝叶斯的方式，模型训练后就可以变成——输入一个东西，而输出一个概率分布。在综述&lt;code&gt;Bayesian Neural Networks: An Introduction and Survey&lt;/code&gt;中提到，概率方法(BNN)提供的输出分布有助于开发可信模型，因其能识别预测中的不确定性，这当然也有一个范围哈。本学习笔记考虑了几个&lt;strong&gt;Literature Survey&lt;/strong&gt;和技术博客进行总结，非常感谢作者们的分享~&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;原文：Bayesian methods for performing regression with that of a simple neural network, and illustrates the importance of measuring uncertainty. While both methods perform well within the bounds of the training data, where extrapolation is required, the probabilistic method provides a full distribution of the function output as opposed to the point estimates provided by the NN. The distribution over outputs provided by probabilistic methods allows for the development of trustworthy models, in that they can identify uncertainty in a prediction. Given that NNs are the most promising model for generating AI systems, it is important that we can similarly trust their predictions.&lt;/p&gt;&lt;/blockquote&gt;
