@@ -15,7 +15,115 @@
         <guid>https://mosfish.github.io/wxyblog/p/5g%E6%A0%B8%E5%BF%83%E7%BD%91%E9%83%A8%E7%BD%B2%E5%8F%8A%E6%B5%8B%E8%AF%95%E6%89%8B%E5%86%8C/</guid>
         <description>&lt;h1 id=&#34;free5gc核心网部署与接入测试手册&#34;&gt;Free5GC核心网部署与接入测试手册
 &lt;/h1&gt;&lt;p&gt;&lt;font size=4 color=&#34;red&#34;&gt; &lt;strong&gt;写在开篇&lt;/strong&gt;：&lt;/font&gt;&lt;font size=4 color=&#34;red&#34;&gt; 建议养成&lt;strong&gt;备份&lt;/strong&gt;（例如git工具）的好习惯。本文包含Linux开发基础内容、free5gc核心网&lt;/font&gt;&lt;/p&gt;
+&lt;p&gt;==考虑到版权问题，本文章如需要转载请进行声明==&lt;/p&gt;
 &lt;p&gt;起初使用&lt;strong&gt;VMware虚拟机装的Ubuntu桌面版系统&lt;/strong&gt;，但是实际工程需要&lt;strong&gt;板载Linux系统&lt;/strong&gt;（但是学习初期直接上手，容易因为不熟悉操作而出现诸如网卡连不了网，没声音，拼音输入法等软硬件不适配类似的各种问题）可以&lt;strong&gt;先基于虚拟机进行学习&lt;/strong&gt;，入门后再基于板载Linux系统开发核心网。&lt;/p&gt;
+&lt;h1 id=&#34;5g核心网介绍&#34;&gt;5G核心网介绍
+&lt;/h1&gt;&lt;p&gt;参考 &lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/qq397115761/article/details/132756679&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;【5G】5G 核心网（5GC）基本架构_5g核心网架构-CSDN博客&lt;/a&gt;&lt;/p&gt;
+&lt;div align=center&gt;&lt;img src=&#34;111.png&#34; width=400/&gt;&lt;/div&gt;
+&lt;center&gt;&lt;font size=2&gt;核心网具体结构&lt;/font&gt;&lt;/center&gt;
+&lt;p&gt;5G 核心网是支持 5G 移动通信的核心基础设施，在 5G 通信中负责实现数据处理、控制、管理、路由和连接等功能。5G 核心网的架构采用了基于服务的设计 (Service-based Architecture, SBA)，支持网络切片、NFV、软件定义网络 (Software-Defined Networking, SDN) 等先进技术，提供更高的灵活性和可扩展性。&lt;/p&gt;
+&lt;h2 id=&#34;5g网络架构与接口&#34;&gt;5G网络架构与接口
+&lt;/h2&gt;&lt;h4 id=&#34;5g核心网网元功能&#34;&gt;5G核心网网元功能
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;AMF (Access and Mobility Management Function)&lt;/strong&gt;
+接入与移动性管理功能，主要负责：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;接入控制、用户移动性管理&lt;/li&gt;
+&lt;li&gt;会话管理和用户身份管理&lt;/li&gt;
+&lt;li&gt;处理UE与网络的接入请求&lt;/li&gt;
+&lt;li&gt;管理用户接入状态及移动性支持&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;SMF (Session Management Function)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;会话管理功能，负责：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;会话的建立、修改和释放&lt;/li&gt;
+&lt;li&gt;数据流管理（路由、QoS保证、IP分配）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;UPF (User Plane Function)&lt;/strong&gt;
+用户面功能，负责：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;转发用户数据流&lt;/li&gt;
+&lt;li&gt;与SMF协作管理数据路径、路由和转发&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;NSSF (Network Slice Selection Function)&lt;/strong&gt;
+网络切片选择功能，负责：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;根据业务需求动态选择网络切片&lt;/li&gt;
+&lt;li&gt;管理不同业务场景的切片资源&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;PCF (Policy Control Function)&lt;/strong&gt;
+策略控制功能，负责：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;制定网络策略（QoS、计费、流量管理、安全性）&lt;/li&gt;
+&lt;li&gt;为AMF/SMF/UPF提供策略决策服务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;UDM (Unified Data Management)&lt;/strong&gt;
+统一数据管理功能，负责：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;存储用户订阅信息（SUPI）、服务配置、认证信息&lt;/li&gt;
+&lt;li&gt;与AUSF/AMF等网元协作提供数据服务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;5g网络组成&#34;&gt;5G网络组成
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;架构组成&lt;/strong&gt;：5GC（核心网） + RAN（无线接入网） + UE（用户设备）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;核心网功能&lt;/strong&gt;：服务管理、数据传输、安全性&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RAN功能&lt;/strong&gt;：无线连接、数据传输与控制信号传递&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;UE角色&lt;/strong&gt;：用户交互终端，通过RAN与核心网通信&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;无线接入网与核心网接口&#34;&gt;无线接入网与核心网接口
+&lt;/h4&gt;&lt;p&gt;主要接口及功能：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;N1接口&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;连接：UE ↔ AMF&lt;/li&gt;
+&lt;li&gt;功能：信令传递（UE接入管理、认证）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;N2接口&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;连接：AMF ↔ SMF&lt;/li&gt;
+&lt;li&gt;功能：会话管理协作（处理用户会话任务）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;N3接口&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;连接：无线接入网 ↔ UPF&lt;/li&gt;
+&lt;li&gt;功能：用户数据传输（数据面主要路径）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;N4接口&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;连接：SMF ↔ UPF&lt;/li&gt;
+&lt;li&gt;功能：用户数据路径选择与管理（SMF控制UPF流量）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;N6接口&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;连接：UPF ↔ 数据网络（DN）&lt;/li&gt;
+&lt;li&gt;功能：用户数据外发至互联网/外部网络&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h1 id=&#34;linux开发基本配置与指令&#34;&gt;linux开发基本配置与指令
 &lt;/h1&gt;&lt;h2 id=&#34;一常用指令&#34;&gt;一、常用指令
 &lt;/h2&gt;&lt;h3 id=&#34;1基本指令部分&#34;&gt;1.基本指令部分
@@ -692,7 +800,107 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;此步目的在于防止后续free5gc容器化部署时，到make base步骤，出现permission denied。&lt;/p&gt;
-&lt;p&gt;安装cmake：&lt;/p&gt;
+&lt;h4 id=&#34;更换镜像源&#34;&gt;更换镜像源
+&lt;/h4&gt;&lt;p&gt;这是很重要的一步，原理是部分镜像源起到类似代理的作用。在网上搜索最新docker镜像源，参考&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/u014390502/article/details/143472743&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;国内能用的Docker镜像源【2025最新持续更新】_docker 镜像-CSDN博客&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/c12312303/article/details/146428465&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;国内仍然可用docker镜像源汇总，长期维护，定期更新（2025年3月21日）_docker 国内镜像源-CSDN博客&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://zhuanlan.zhihu.com/p/32004414428&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Docker换源加速(更换镜像源)详细教程（2025.3最新可用镜像，全网最详细） - 知乎&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;然后输入类似于&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo nano /etc/docker/daemon.json
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;来创造或修改配置文件，在里面写入代理网站，但是下面这个是一开始的，现在被ban掉了好多，不推荐，&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &amp;#34;registry-mirrors&amp;#34;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;https://hub-mirror.c.163.com&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;https://mirror.baidubce.com&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;https://docker.mirrors.ustc.edu.cn&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;https://mirror.ccs.tencentyun.com&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  ]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;推荐这些，或者去我给的参考链接找最新存活的：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &amp;#34;registry-mirrors&amp;#34;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;https://docker-0.unsee.tech&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;https://docker-cf.registry.cyou&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;https://docker.1panel.live&amp;#34;,   
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;https://docker.xuanyuan.me&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;https://1ms.run&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;https://hub.fast360.xyz&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;https://hub.littlediary.cn&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  ]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;然后保存离开，输入以下命令清除缓存、重启docker&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;systemctl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;daemon&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reload&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;systemctl&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;restart&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;docker&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;然后可以查看docker源是否更改：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;docker info | grep -A 1 &amp;#34;Registry Mirrors&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;==最后可以尝试验证：==&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;docker pull hello-world
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;拉取成功即可以。&lt;/p&gt;
+&lt;h4 id=&#34;继续安装其他组件&#34;&gt;继续安装其他组件
+&lt;/h4&gt;&lt;p&gt;安装cmake：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
@@ -763,8 +971,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo apt update &amp;amp;&amp;amp; sudo apt install yarn
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;==直接使用没有虚拟机模式的3588，有限制，交换机==，非无感&lt;/p&gt;
-&lt;h3 id=&#34;构建gtp5g模块&#34;&gt;构建GTP5G模块
+&lt;/div&gt;&lt;h3 id=&#34;构建gtp5g模块&#34;&gt;构建GTP5G模块
 &lt;/h3&gt;&lt;p&gt;&lt;strong&gt;注意构建GTP5G&lt;/strong&gt;模块时，需要用普通用户构建，否则后续使用时会出错&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -843,12 +1050,14 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;&lt;font size=1.5&gt;其中docker-compose build一步可能报版本错误，原因在于上面安装docker、docker-compose时可能安装了较低版本的docker、docker-compose，此时可以选择重装docker、docker-compose或者修改docker-compose.yaml文件中第一行版本号3.8为当前版本，建议优先选择重装docker、docker-compose，以回避未知错误，可以通过命令docker &amp;ndash;version命令查询当前版本。（不过如果是按教程里的话一般没问题）&lt;/font&gt;&lt;/p&gt;
-&lt;p&gt;编译过程中也有可能遇到&lt;code&gt;golang bullseye&lt;/code&gt;报错，一般是由于vpn的速度太慢超时、或者ping不了外网，报错信息类似于：&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;交叉编译&#34;&gt;交叉编译
+&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;交叉编译指利用不同的平台进行处理，并把安装或编译好的东西转移到所需平台。这种思想不仅仅用于以下案例，可以用到很多地方。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;如果不按照刚才说法设置镜像代理的话，编译过程中也有可能遇到&lt;code&gt;golang bullseye&lt;/code&gt;报错，&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;=&amp;gt; ERROR [internal] load metadata for docker.io/library/golang: 21.5s ------ &amp;gt; [internal] load metadata for docker.io/library/golang:1.21.8-bullseye&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;比较推荐的方法是按照第二部分搞个linux的梯子出来，如果没有的话，可以在&lt;strong&gt;主机windows&lt;/strong&gt;挂梯子下载docker desktop软件：&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image006.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
-&lt;p&gt;下载好后在上面搜索golang，选&lt;strong&gt;1.24.0-bullseye&lt;/strong&gt;（我用的&lt;strong&gt;1.23.6&lt;/strong&gt;-bullseye，这俩都行），点击&lt;strong&gt;pull&lt;/strong&gt;，即可把包下载到电脑里。&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image008.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;p&gt;如果实在不打算使用镜像源，可以利用==交叉编译==在&lt;strong&gt;主机windows&lt;/strong&gt;挂梯子下载docker desktop软件，下载好后在上面搜索golang，选&lt;strong&gt;1.24.0-bullseye&lt;/strong&gt;（我用的&lt;strong&gt;1.23.6&lt;/strong&gt;-bullseye，这俩都行），点击&lt;strong&gt;pull&lt;/strong&gt;，即可把包下载到电脑里。&lt;/p&gt;
+&lt;div align=center&gt;&lt;img src=&#34;17.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;然后在主机打开命令行，输入&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -868,10 +1077,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;可以把包保存到电脑路径里&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image010.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image012.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;18.png&#34; width=600/&gt;&lt;/div&gt;
+&lt;div align=center&gt;&lt;img src=&#34;19.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;从主机把压缩包拷贝到虚拟机：&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image014.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;20.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;在虚拟机输入&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -883,10 +1092,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;vim Dockerfile
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image016.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
-&lt;p&gt;输入&lt;code&gt;I&lt;/code&gt;，进入修改，把版本号改成所用版本(1.24.0之类的)，然后&lt;code&gt;Esc&lt;/code&gt;，输入命令&lt;code&gt;:wq&lt;/code&gt;（带冒号）&lt;/p&gt;
-&lt;p&gt;即可退出修改。&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image018.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;/div&gt;&lt;p&gt;进入配置文件，&lt;/p&gt;
+&lt;p&gt;输入&lt;code&gt;I&lt;/code&gt;，进入修改，把版本号改成所用版本(1.24.0之类的)，然后&lt;code&gt;Esc&lt;/code&gt;，输入命令&lt;code&gt;:wq&lt;/code&gt;（带冒号）即可保存退出。&lt;/p&gt;
 &lt;p&gt;然后虚拟机终端输入：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -897,30 +1104,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;之后&lt;strong&gt;重复原本步骤编译&lt;/strong&gt;就可以。&lt;/p&gt;
-&lt;p&gt;也可以考虑手动添加国内镜像源代理，类似于中科大的镜像网站（此处可以改成阿里云华为云等）：&lt;/p&gt;
-&lt;p&gt;命令行输入&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;{
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; &amp;#34;registry-mirrors&amp;#34;: [&amp;#34;https://hub-mirror.c.163.com&amp;#34;, &amp;#34;https://docker.mirrors.ustc.edu.cn&amp;#34;]
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;改完后重启docker&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo systemctl restart docker
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;然后按照上述步骤&lt;strong&gt;重新编译&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
 &lt;p&gt;==至此，free5gc容器化部署完成==&lt;/p&gt;
 &lt;h3 id=&#34;安装ueransim&#34;&gt;安装UERANSIM
 &lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
@@ -988,7 +1172,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;这是查看网卡地址，启动free5gc后，会在本地虚拟化出一系列的网卡，这一步需要关注的是原先虚拟机自带的网卡，通常这类网卡的ip地址均处于&lt;code&gt;192.168.*.*&lt;/code&gt;网段，网卡名类似&lt;code&gt;ens33，eth0&lt;/code&gt;之类，可以以此特征区分出来&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image020.png&#34; alt=&#34;img&#34; style=&#34;zoom:50%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;21.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;接下来需要查看并记录amf网元的ip地址：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -999,7 +1183,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;找到上面记录有&amp;quot;IPAddress&amp;quot;: 的一行，后面记录的即是amf的ip地址&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image022.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;22.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;记录下这两个ip地址后，就可以完成UERANSIM中gnb的配置了，通过修改&lt;code&gt;free5gc-gnb.yaml&lt;/code&gt;配置文件完成这一步操作：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1019,16 +1203,7 @@
 &lt;p&gt;访问地址 http://localhost:5000/可进入到free5gc的webui处，登录：&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;用户名：admin 密码：free5gc&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;之后通过free5gc的webui新增一个ue的注册信息（&lt;strong&gt;否则会报错说无法注册&lt;/strong&gt;），此处配置的UE信息原则上需要和&lt;code&gt;~/UERANSIM/config/free5gc-ue.yaml&lt;/code&gt;中的信息一致，但由于此处UERANSIM的代码作者已经设置好，所以实际上无需做任何更改，直接拉到最下面点create就ok&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image024.png&#34;
-	
-	
-	
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;img&#34;
-	
-	
-&gt;&lt;/p&gt;
+&lt;div align=center&gt;&lt;img src=&#34;23.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;之后启动UERANSIM模拟设备&lt;/strong&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1040,7 +1215,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;./nr-gnb -c ../config/free5gc-gnb.yaml#通过nr-gnb程序，指定使用的gnb配置文件，启动模拟基站
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image026.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;/div&gt;&lt;div align=center&gt;&lt;img src=&#34;24.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;另起&lt;/strong&gt;一个shell，执行启动UE的流程&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1052,9 +1227,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo ./nr-ue -c ../config/free5gc-ue.yaml #此处因为需要虚拟出一张ue的网卡，所以需要root权限执行
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image028.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;/div&gt;&lt;div align=center&gt;&lt;img src=&#34;25.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;启动的&lt;strong&gt;两个shell不可关闭&lt;/strong&gt;，可以后台执行，但建议前台执行方便实时查看状态信息。启动完成后，执行&lt;code&gt;ifconfig&lt;/code&gt;可以看到多了一张名为&lt;code&gt;uesimtun0&lt;/code&gt;的网卡；另外，在&lt;strong&gt;free5gc&lt;/strong&gt;的&lt;strong&gt;webui&lt;/strong&gt;处，查看&lt;strong&gt;REALTIME STATUS&lt;/strong&gt;可以看到有一个UE处于连接状态，此时即证明UERANSIM的环境启动成功：&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image030.png&#34; alt=&#34;img&#34; style=&#34;zoom: 67%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;26.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;之后测试一下&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1068,9 +1243,9 @@
 &lt;h2 id=&#34;三以基站配置测试ueransim软件层&#34;&gt;三、以基站配置测试ueransim软件层
 &lt;/h2&gt;&lt;p&gt;&lt;strong&gt;修改PLMN值，IP不变，进行测试、注册&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;先改文件里PLMN的&lt;code&gt;mcc、mnc&lt;/code&gt;分别为&lt;code&gt;001、01&lt;/code&gt;，按照自己的目录（我的涉及&lt;code&gt;/home/wxy/free5gc-compose/config/amfcfg.yaml、gnbcfg.yaml、smfcfg.yaml、uecfg.yaml，/home/wxy/UERANSIM/config/free5gc-gnb.yaml、free5gc-ue.yaml&lt;/code&gt;，包括修改ue里&lt;code&gt;supi&lt;/code&gt;的前五位为&lt;code&gt;00101&lt;/code&gt;：&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image032.png&#34; alt=&#34;img&#34; style=&#34;zoom: 50%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;27.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;还有&lt;code&gt;nrfcfg&lt;/code&gt;文件的&lt;code&gt;mcc、mnc&lt;/code&gt;&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image034.png&#34; alt=&#34;img&#34; style=&#34;zoom: 50%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;28.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;改完save，然后关闭docker&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1115,7 +1290,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;并重新create，修改&lt;code&gt;mcc、mnc、id&lt;/code&gt;后注册&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image036.png&#34; alt=&#34;img&#34; style=&#34;zoom: 67%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;29.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;然后根据一般ueransim测试流程启动，查询有无报错，并用uesimtun0来ping一下百度。&lt;/p&gt;
 &lt;p&gt;虚拟网卡测试&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
@@ -1128,17 +1303,17 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;之后需要修改ip：
 分别在&lt;code&gt;docker-compose&lt;/code&gt;文件里面添加upf的ip、设置amf的ip，还有network的范围&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image038.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image040.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;30.png&#34; width=400/&gt;&lt;/div&gt;
+&lt;div align=center&gt;&lt;img src=&#34;31.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;地址范围subnet要可以覆盖，改为&lt;code&gt;192.168.0.0/16&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image042.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;32.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;由于&lt;code&gt;n3iwue、free5gc-n3iwf&lt;/code&gt;两部分此时用不到，可以把这两段代码&lt;strong&gt;分别注释掉&lt;/strong&gt;。我们要修改amf为&lt;code&gt;192.168.2.198&lt;/code&gt;，smf内的upf与N3口&lt;code&gt;192.168.8.198&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;在amfcfg将&lt;code&gt;ngapip&lt;/code&gt;改为基站的&lt;code&gt;192.168.2.198&lt;/code&gt;&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image044.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;33.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;smfcfg的upf ip改为基站upf &lt;code&gt;192.168.8.198&lt;/code&gt;&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image046.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;34.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;以及upfcfg的N3 ip为&lt;code&gt;192.168.8.198&lt;/code&gt;&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image048.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;35.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;改完保存，把docker给down掉关闭，然后重复一般测试流程，成功标志为&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1149,18 +1324,12 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;可以收到包。&lt;/p&gt;
-&lt;img src=&#34;C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 171144.png&#34; style=&#34;zoom:50%;&#34; /&gt;
-&lt;h4 id=&#34;问题1遇到uegnb成功连接且核心网成功配置但是ping不通网&#34;&gt;问题1：遇到ue、gnb成功连接且核心网成功配置但是ping不通网
-&lt;/h4&gt;&lt;p&gt;这个问题比较随机，因为每个人虚拟机、或者linux子系统的默认配置不同。诊断方法可以考虑进入upf的网络空间进行调整；或者docker logs amf那几个看一下日志；或根据路由、配合抓包进行诊断。具体命令在本文档第一部分。&lt;/p&gt;
-&lt;p&gt;为方便理解，&lt;strong&gt;各模块功能见图：&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;介绍与基本架构：
-&lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/qq397115761/article/details/132756679&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;【5G】5G 核心网（5GC）基本架构_5g核心网架构-CSDN博客&lt;/a&gt;&lt;/p&gt;
-&lt;img src=&#34;C:\Users\wxy11\OneDrive\Desktop\tempfromvsus\6.png&#34; style=&#34;zoom: 33%;&#34; /&gt;
-&lt;img src=&#34;C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 191928.png&#34; style=&#34;zoom:67%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;36.png&#34; width=400/&gt;&lt;/div&gt;
+&lt;h4 id=&#34;问题1遇到uegnb成功连接且核心网成功配置但是不通网&#34;&gt;问题1：遇到ue、gnb成功连接且核心网成功配置但是不通网
+&lt;/h4&gt;&lt;p&gt;这个问题比较随机，因为每个人虚拟机、或者linux子系统的默认配置不同。诊断方法可以考虑进入upf的网络空间进行调整；或者docker logs amf那几个看一下日志；或根据路由、配合抓包进行诊断。具体命令在本文档第二部分。&lt;/p&gt;
 &lt;p&gt;查询UERANSIM内的UE和GNB有没有建立PDU连接：&lt;/p&gt;
-&lt;img src=&#34;C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 171333.png&#34; style=&#34;zoom: 25%;&#34; /&gt;
-&lt;img src=&#34;C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 171340.png&#34; alt=&#34;屏幕截图 2025-02-19 171340&#34; style=&#34;zoom: 25%;&#34; /&gt;
+&lt;div align=center&gt;&lt;img src=&#34;113.png&#34; width=400/&gt;&lt;/div&gt;
+&lt;div align=center&gt;&lt;img src=&#34;114.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;如图可见二者连接正常，说明ue与gnb连接正常。之后可以分别查看一下amf、upf有没有正常启动、报错，用以下命令检查日志：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1187,7 +1356,7 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ping 192.168.8.198 -I uesimtun0
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;img src=&#34;C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 185827.png&#34; style=&#34;zoom:50%;&#34; /&gt;
+&lt;/div&gt;&lt;div align=center&gt;&lt;img src=&#34;115.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;还是通的话，可以进入upf的网络空间，看upf联网如何，&lt;/p&gt;
 &lt;p&gt;利用pid方法进入网络空间进行&lt;code&gt;ifconfig&lt;/code&gt;或者&lt;code&gt;ping&lt;/code&gt;操作&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
@@ -1224,7 +1393,7 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ping 8.8.8.8
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;img src=&#34;C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 190437.png&#34; style=&#34;zoom:50%;&#34; /&gt;
+&lt;/div&gt;&lt;div align=center&gt;&lt;img src=&#34;116.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;如果有包收发，那就证明upf可以上网，所以整个网络连接没有问题。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;问题出在哪里？==IP 转发 和 NAT  配置==&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;我们需要启用 &lt;code&gt;IPv4&lt;/code&gt; 数据包转发功能（将接收到的 IP 数据包从一个网络接口转发到另一个网络接口），以及开启&lt;code&gt;NAT&lt;/code&gt;模式（数据包离开当前网络时进行源地址转换），并允许转发的数据包通过防火墙。==ICMP==&lt;/p&gt;
@@ -1251,7 +1420,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        ./upf -c /free5gc/config/upfcfg.yaml
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;img src=&#34;C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 191155.png&#34; style=&#34;zoom:50%;&#34; /&gt;
+&lt;/div&gt;&lt;div align=center&gt;&lt;img src=&#34;117.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;修改后&lt;code&gt;save&lt;/code&gt;，然后把ueransim关掉，docker给down掉，重新跑一遍启动流程，之后测试&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1332,11 +1501,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;&lt;em&gt;需要关掉ueransim，防止ip干扰冲突。&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;然后添加端口映射38412，此处对amf修改无严格要求。&lt;/p&gt;
-&lt;img src=&#34;file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image056.png&#34; alt=&#34;img&#34; style=&#34;zoom:67%;&#34; /&gt;
-&lt;p&gt;添加upf网口&lt;code&gt;2152:2152 /udp&lt;/code&gt;，经测试ue无法注册信号，产生mac相关报错，原因可能是free5gc默认和ueransim的对齐导致一些文件配置有问题。于是采用修改的核心网，工程文件来源于师兄&lt;code&gt;distributed-core-network-control-plane&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;然后添加&lt;strong&gt;端口映射&lt;/strong&gt;38412，此处对amf修改无严格要求。&lt;/p&gt;
+&lt;p&gt;添加upf网口&lt;code&gt;2152:2152 /udp&lt;/code&gt;，经测试ue无法注册信号，产生mac相关报错，原因可能是free5gc默认和ueransim的对齐导致一些文件配置有问题。于是采用修改的核心网，工程文件来源于师兄&lt;code&gt;distributed-core-network-control-plane&lt;/code&gt;。&lt;/p&gt;
 &lt;h1 id=&#34;写在结尾&#34;&gt;写在结尾
-&lt;/h1&gt;&lt;p&gt;==特别鸣谢：江师兄、梁师兄和两位老师==&lt;/p&gt;
+&lt;/h1&gt;&lt;p&gt;==特别鸣谢：两位师兄和两位老师==&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;后期工作：&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -1346,9 +1514,10 @@
 &lt;p&gt;深入理解代码、规范、抓包工具；实体基站和软件ueransim的不同&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;步进调试环境搭建&lt;/p&gt;
+&lt;p&gt;步进调试环境搭建、分布式核心网改进&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;本文只涉及基础的Free5GC内容，由于传统核心网的集中性、易受攻击的问题，可以采取分布式架构进行优化，下篇文章阐述何为分布式核心网、市场空间、技术路线等。&lt;/strong&gt;&lt;/p&gt;
 </description>
         </item>
         
