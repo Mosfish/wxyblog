@@ -434,8 +434,9 @@
     
     
     <h1 id="free5gc核心网部署与接入测试手册">Free5GC核心网部署与接入测试手册
-</h1><p><font size=4 color="red"> <strong>写在开篇</strong>：</font><font size=4 color="red"> 建议养成<strong>备份</strong>（例如git工具）的好习惯。本文包含Linux开发基础内容、free5gc核心网</font></p>
-<p>==考虑到版权问题，本文章如需要转载请进行声明==</p>
+</h1><div align=center><img src="11111.png" width=300/></div>
+<p><font size=4 color="red"> <strong>写在开篇</strong>：</font><font size=4 color="red"> 建议养成<strong>备份</strong>（例如git工具）的好习惯。本文包含Linux开发基础内容、free5gc核心网</font></p>
+<p><font size=4 color="red"> </font><font size=4 color="red"> 考虑到版权问题，本文章如需要转载请进行声明。</font></p>
 <p>起初使用<strong>VMware虚拟机装的Ubuntu桌面版系统</strong>，但是实际工程需要<strong>板载Linux系统</strong>（但是学习初期直接上手，容易因为不熟悉操作而出现诸如网卡连不了网，没声音，拼音输入法等软硬件不适配类似的各种问题）可以<strong>先基于虚拟机进行学习</strong>，入门后再基于板载Linux系统开发核心网。</p>
 <h2 id="5g核心网介绍">5G核心网介绍
 </h2><p>参考 <a class="link" href="https://blog.csdn.net/qq397115761/article/details/132756679"  target="_blank" rel="noopener"
@@ -740,7 +741,7 @@
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo brctl addif &lt;bridge&gt; &lt;网卡名&gt;
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>==<strong>Linux启动wireshark抓包</strong>——需要安装linux的wireshark然后启动：	<code>sudo wireshark</code>==</p>
+</div><p><strong>Linux启动wireshark抓包</strong>——需要安装linux的wireshark然后启动：	<code>sudo wireshark</code></p>
 <h4 id="2网络空间测试">2.网络空间测试
 </h4><p>一般是用<code>docker inspect amf</code>或者<code>docker logs amf</code>来对amf、smf、upf之类的进行测试，</p>
 <p>也可以进入网络空间进行进一步测试例如：</p>
@@ -849,7 +850,7 @@
 <p>启用代理服务器，不用打勾，保持默认就行，右下角端口即为vpn端口。</p>
 <div align=center><img src="3.png" width=300/></div>
 <h5 id="问题2为什么我的vpn它通不了外网">问题2：为什么我的vpn它通不了外网？
-</h5><p>一般而言，如果浏览器可以打开谷歌就证明梯子没问题。那么问题就出在——==实际命令行终端走代理需要进一步配置端口==</p>
+</h5><p>一般而言，如果浏览器可以打开谷歌就证明梯子没问题。那么问题就出在——<strong>实际命令行终端走代理需要进一步配置端口</strong></p>
 <p>已知代理端口（例如7890），之后就set一下http、https两个协议走这个端口，类似于</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -892,7 +893,7 @@
 </div>
 </div><h3 id="四虚拟机关机与挂起">四、虚拟机关机与挂起
 </h3><p>虚拟机关机就是不再占用资源，但是再次开启需要重启；挂起就是虚拟机保存挂起的状态，打开不需要重启。</p>
-<p>==<em>最重要的事情是<strong>记得自己虚拟机的路径</strong></em>==</p>
+<p><em>最重要的事情是<strong>记得自己虚拟机的路径</strong></em>.</p>
 <h4 id="问题1关机后找不到虚拟机咋办">问题1：关机后找不到虚拟机咋办
 </h4><p>点击<code>扫描虚拟机</code>，找到.vmx文件打开就行。</p>
 <div align=center><img src="4.png" width=300/></div>
@@ -967,11 +968,11 @@
 <p>可能遇见这种情况，但是如果默认系统是linux一般用不上：<em><strong><font size=1>输入 <code>t</code> 设置分区类型，选择 <code>83</code>（Linux 文件系统）。</font></strong></em></p>
 </li>
 </ul>
-<h5 id="问题1虚拟机退出后再启动会卡在初始页面">==问题1：虚拟机退出后再启动会卡在初始页面==
+<h5 id="问题1虚拟机退出后再启动会卡在初始页面">问题1：虚拟机退出后再启动会卡在初始页面
 </h5><p>类似于这样，进不去虚拟机，一直卡在这个地方：</p>
 <div align=center><img src="8.png" width=400/></div>
 <p><strong>因为没注意虚拟机盘满了</strong>，卡在初始界面进不去，所以要在盘快满的时候<strong>提前分盘</strong>。</p>
-<p>==VMware卡在命令行/dev/sda3 clean&hellip; 界面不动的解决办法：==</p>
+<p><strong>VMware卡在命令行/dev/sda3 clean&hellip; 界面不动的解决办法：</strong></p>
 <p>参考https://blog.csdn.net/SunshineLiy/article/details/134372529</p>
 <p>显示分区已满，需要找到这个分区一些没用的文件删掉，先进去虚拟机能分盘再说。</p>
 <p><strong>进入 grub 模式</strong>，重启虚拟机，在显示到这个界面的时候</p>
@@ -1062,7 +1063,7 @@
 </h2><p>主要参考：<a class="link" href="https://www.freebuf.com/articles/wireless/268397.html"  target="_blank" rel="noopener"
     >Free5gc+UERANSIM模拟5G网络环境搭建及基本使用 - FreeBuf网络安全行业门户</a></p>
 <p>此处采用<strong>docker容器化部署</strong>，其他独立化部署可以看教程，根据实际情况同时参考教程和本文档。</p>
-<p>==<strong>考虑实际情况，建议这里采用镜像源代理的方式，暂且不用vpn</strong>==</p>
+<p><strong>考虑实际情况，建议这里采用镜像源代理的方式，暂且不用vpn</strong></p>
 <h3 id="一free5gc部署">一、Free5gc部署
 </h3><h4 id="准备工作">准备工作
 </h4><p>使用命令：</p>
@@ -1309,7 +1310,7 @@
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker info | grep -A 1 &#34;Registry Mirrors&#34;
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>==最后可以尝试验证：==</p>
+</div><p><strong>最后可以尝试验证：</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -1476,7 +1477,7 @@
 <p>交叉编译指利用不同的平台进行处理，并把安装或编译好的东西转移到所需平台。这种思想不仅仅用于以下案例，可以用到很多地方。</p></blockquote>
 <p>如果不按照刚才说法设置镜像代理的话，编译过程中也有可能遇到<code>golang bullseye</code>报错，</p>
 <p><code>=&gt; ERROR [internal] load metadata for docker.io/library/golang: 21.5s ------ &gt; [internal] load metadata for docker.io/library/golang:1.21.8-bullseye</code></p>
-<p>如果实在不打算使用镜像源，可以利用==交叉编译==在<strong>主机windows</strong>挂梯子下载docker desktop软件，下载好后在上面搜索golang，选<strong>1.24.0-bullseye</strong>（我用的<strong>1.23.6</strong>-bullseye，这俩都行），点击<strong>pull</strong>，即可把包下载到电脑里。</p>
+<p>如果实在不打算使用镜像源，可以利用<strong>交叉编译</strong>在<strong>主机windows</strong>挂梯子下载docker desktop软件，下载好后在上面搜索golang，选<strong>1.24.0-bullseye</strong>（我用的<strong>1.23.6</strong>-bullseye，这俩都行），点击<strong>pull</strong>，即可把包下载到电脑里。</p>
 <div align=center><img src="17.png" width=400/></div>
 <p>然后在主机打开命令行，输入</p>
 <div class="highlight"><div class="chroma">
@@ -1525,7 +1526,7 @@
 </div>
 </div><p>之后<strong>重复原本步骤编译</strong>就可以。</p>
 <hr>
-<p>==至此，free5gc容器化部署完成==</p>
+<p><strong>至此，free5gc容器化部署完成</strong></p>
 <h3 id="二安装ueransim">二、安装UERANSIM
 </h3><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1571,7 +1572,7 @@
 </div>
 </div><p>编译完成就安装成功了。</p>
 <h3 id="三启动free5gc和ueransim环境">三、启动free5gc和ueransim环境
-</h3><p>==Free5gc，启动！==</p>
+</h3><p><strong>Free5gc，启动</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -1619,7 +1620,7 @@
 <p>修改其中的<strong>amfconfig</strong>一项下的<strong>address</strong>为<strong>amf</strong>的ip，然后<code>Esc</code>，再输入  <code>:wq</code></p>
 <p>表示保存并退出，类似还有 <code>:q  :qa  :exit  :^X</code>之类的。</p>
 <p><strong>每次重启机器后，amf</strong>地址可能改变，注意更改。</p>
-<p>==至此，UERANSIM的基站配置完成==，接下来需要在free5gc中注册UERANSIM的UE部分：</p>
+<p><strong>至此，UERANSIM的基站配置完成</strong>，接下来需要在free5gc中注册UERANSIM的UE部分：</p>
 <p>访问地址 http://localhost:5000/可进入到free5gc的webui处，登录：</p>
 <p><code>用户名：admin 密码：free5gc</code></p>
 <p>之后通过free5gc的webui新增一个ue的注册信息（<strong>否则会报错说无法注册</strong>），此处配置的UE信息原则上需要和<code>~/UERANSIM/config/free5gc-ue.yaml</code>中的信息一致，但由于此处UERANSIM的代码作者已经设置好，所以实际上无需做任何更改，直接拉到最下面点create就ok</p>
@@ -1677,7 +1678,7 @@
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker-compose down
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>再重新跑核心网流程==wireshark抓包查看闪退原因==</p>
+</div><p>再重新跑核心网流程<strong>wireshark抓包查看闪退原因</strong></p>
 <p><strong>启动核心网环境</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1817,8 +1818,8 @@
 </div>
 </div><div align=center><img src="116.png" width=400/></div>
 <p>如果有包收发，那就证明upf可以上网，所以整个网络连接没有问题。</p>
-<p><strong>问题出在哪里？==IP 转发 和 NAT  配置==</strong></p>
-<p>我们需要启用 <code>IPv4</code> 数据包转发功能（将接收到的 IP 数据包从一个网络接口转发到另一个网络接口），以及开启<code>NAT</code>模式（数据包离开当前网络时进行源地址转换），并允许转发的数据包通过防火墙。==ICMP==</p>
+<p><strong>问题出在哪里？IP 转发 和 NAT  配置</strong></p>
+<p>我们需要启用 <code>IPv4</code> 数据包转发功能（将接收到的 IP 数据包从一个网络接口转发到另一个网络接口），以及开启<code>NAT</code>模式（数据包离开当前网络时进行源地址转换），并允许转发的数据包通过防火墙。<code>ICMP</code></p>
 <p>把<code>docker-compose</code>文件的<code>upf</code>部分的<code>command</code>修改添加以下代码</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1926,7 +1927,7 @@
 <p>然后添加<strong>端口映射</strong>38412，此处对amf修改无严格要求。</p>
 <p>添加upf网口<code>2152:2152 /udp</code>，经测试ue无法注册信号，产生mac相关报错，原因可能是free5gc默认和ueransim的对齐导致一些文件配置有问题。于是采用修改的核心网，工程文件来源于师兄<code>distributed-core-network-control-plane</code>。</p>
 <h2 id="写在结尾">写在结尾
-</h2><p>==特别鸣谢：两位师兄和两位老师==</p>
+</h2><p><strong>特别鸣谢：两位师兄和两位老师</strong></p>
 <p><strong>后期工作：</strong></p>
 <ul>
 <li>

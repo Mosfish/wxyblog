@@ -14,8 +14,9 @@
         
         <guid>https://mosfish.github.io/wxyblog/p/5g%E6%A0%B8%E5%BF%83%E7%BD%91%E9%83%A8%E7%BD%B2%E5%8F%8A%E6%B5%8B%E8%AF%95%E6%89%8B%E5%86%8C/</guid>
         <description>&lt;h1 id=&#34;free5gc核心网部署与接入测试手册&#34;&gt;Free5GC核心网部署与接入测试手册
-&lt;/h1&gt;&lt;p&gt;&lt;font size=4 color=&#34;red&#34;&gt; &lt;strong&gt;写在开篇&lt;/strong&gt;：&lt;/font&gt;&lt;font size=4 color=&#34;red&#34;&gt; 建议养成&lt;strong&gt;备份&lt;/strong&gt;（例如git工具）的好习惯。本文包含Linux开发基础内容、free5gc核心网&lt;/font&gt;&lt;/p&gt;
-&lt;p&gt;==考虑到版权问题，本文章如需要转载请进行声明==&lt;/p&gt;
+&lt;/h1&gt;&lt;div align=center&gt;&lt;img src=&#34;11111.png&#34; width=300/&gt;&lt;/div&gt;
+&lt;p&gt;&lt;font size=4 color=&#34;red&#34;&gt; &lt;strong&gt;写在开篇&lt;/strong&gt;：&lt;/font&gt;&lt;font size=4 color=&#34;red&#34;&gt; 建议养成&lt;strong&gt;备份&lt;/strong&gt;（例如git工具）的好习惯。本文包含Linux开发基础内容、free5gc核心网&lt;/font&gt;&lt;/p&gt;
+&lt;p&gt;&lt;font size=4 color=&#34;red&#34;&gt; &lt;/font&gt;&lt;font size=4 color=&#34;red&#34;&gt; 考虑到版权问题，本文章如需要转载请进行声明。&lt;/font&gt;&lt;/p&gt;
 &lt;p&gt;起初使用&lt;strong&gt;VMware虚拟机装的Ubuntu桌面版系统&lt;/strong&gt;，但是实际工程需要&lt;strong&gt;板载Linux系统&lt;/strong&gt;（但是学习初期直接上手，容易因为不熟悉操作而出现诸如网卡连不了网，没声音，拼音输入法等软硬件不适配类似的各种问题）可以&lt;strong&gt;先基于虚拟机进行学习&lt;/strong&gt;，入门后再基于板载Linux系统开发核心网。&lt;/p&gt;
 &lt;h2 id=&#34;5g核心网介绍&#34;&gt;5G核心网介绍
 &lt;/h2&gt;&lt;p&gt;参考 &lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/qq397115761/article/details/132756679&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -320,7 +321,7 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo brctl addif &amp;lt;bridge&amp;gt; &amp;lt;网卡名&amp;gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;==&lt;strong&gt;Linux启动wireshark抓包&lt;/strong&gt;——需要安装linux的wireshark然后启动：	&lt;code&gt;sudo wireshark&lt;/code&gt;==&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Linux启动wireshark抓包&lt;/strong&gt;——需要安装linux的wireshark然后启动：	&lt;code&gt;sudo wireshark&lt;/code&gt;&lt;/p&gt;
 &lt;h4 id=&#34;2网络空间测试&#34;&gt;2.网络空间测试
 &lt;/h4&gt;&lt;p&gt;一般是用&lt;code&gt;docker inspect amf&lt;/code&gt;或者&lt;code&gt;docker logs amf&lt;/code&gt;来对amf、smf、upf之类的进行测试，&lt;/p&gt;
 &lt;p&gt;也可以进入网络空间进行进一步测试例如：&lt;/p&gt;
@@ -429,7 +430,7 @@
 &lt;p&gt;启用代理服务器，不用打勾，保持默认就行，右下角端口即为vpn端口。&lt;/p&gt;
 &lt;div align=center&gt;&lt;img src=&#34;3.png&#34; width=300/&gt;&lt;/div&gt;
 &lt;h5 id=&#34;问题2为什么我的vpn它通不了外网&#34;&gt;问题2：为什么我的vpn它通不了外网？
-&lt;/h5&gt;&lt;p&gt;一般而言，如果浏览器可以打开谷歌就证明梯子没问题。那么问题就出在——==实际命令行终端走代理需要进一步配置端口==&lt;/p&gt;
+&lt;/h5&gt;&lt;p&gt;一般而言，如果浏览器可以打开谷歌就证明梯子没问题。那么问题就出在——&lt;strong&gt;实际命令行终端走代理需要进一步配置端口&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;已知代理端口（例如7890），之后就set一下http、https两个协议走这个端口，类似于&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -472,7 +473,7 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id=&#34;四虚拟机关机与挂起&#34;&gt;四、虚拟机关机与挂起
 &lt;/h3&gt;&lt;p&gt;虚拟机关机就是不再占用资源，但是再次开启需要重启；挂起就是虚拟机保存挂起的状态，打开不需要重启。&lt;/p&gt;
-&lt;p&gt;==&lt;em&gt;最重要的事情是&lt;strong&gt;记得自己虚拟机的路径&lt;/strong&gt;&lt;/em&gt;==&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;最重要的事情是&lt;strong&gt;记得自己虚拟机的路径&lt;/strong&gt;&lt;/em&gt;.&lt;/p&gt;
 &lt;h4 id=&#34;问题1关机后找不到虚拟机咋办&#34;&gt;问题1：关机后找不到虚拟机咋办
 &lt;/h4&gt;&lt;p&gt;点击&lt;code&gt;扫描虚拟机&lt;/code&gt;，找到.vmx文件打开就行。&lt;/p&gt;
 &lt;div align=center&gt;&lt;img src=&#34;4.png&#34; width=300/&gt;&lt;/div&gt;
@@ -547,11 +548,11 @@
 &lt;p&gt;可能遇见这种情况，但是如果默认系统是linux一般用不上：&lt;em&gt;&lt;strong&gt;&lt;font size=1&gt;输入 &lt;code&gt;t&lt;/code&gt; 设置分区类型，选择 &lt;code&gt;83&lt;/code&gt;（Linux 文件系统）。&lt;/font&gt;&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h5 id=&#34;问题1虚拟机退出后再启动会卡在初始页面&#34;&gt;==问题1：虚拟机退出后再启动会卡在初始页面==
+&lt;h5 id=&#34;问题1虚拟机退出后再启动会卡在初始页面&#34;&gt;问题1：虚拟机退出后再启动会卡在初始页面
 &lt;/h5&gt;&lt;p&gt;类似于这样，进不去虚拟机，一直卡在这个地方：&lt;/p&gt;
 &lt;div align=center&gt;&lt;img src=&#34;8.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;因为没注意虚拟机盘满了&lt;/strong&gt;，卡在初始界面进不去，所以要在盘快满的时候&lt;strong&gt;提前分盘&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;==VMware卡在命令行/dev/sda3 clean&amp;hellip; 界面不动的解决办法：==&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;VMware卡在命令行/dev/sda3 clean&amp;hellip; 界面不动的解决办法：&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;参考https://blog.csdn.net/SunshineLiy/article/details/134372529&lt;/p&gt;
 &lt;p&gt;显示分区已满，需要找到这个分区一些没用的文件删掉，先进去虚拟机能分盘再说。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;进入 grub 模式&lt;/strong&gt;，重启虚拟机，在显示到这个界面的时候&lt;/p&gt;
@@ -642,7 +643,7 @@
 &lt;/h2&gt;&lt;p&gt;主要参考：&lt;a class=&#34;link&#34; href=&#34;https://www.freebuf.com/articles/wireless/268397.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Free5gc+UERANSIM模拟5G网络环境搭建及基本使用 - FreeBuf网络安全行业门户&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;此处采用&lt;strong&gt;docker容器化部署&lt;/strong&gt;，其他独立化部署可以看教程，根据实际情况同时参考教程和本文档。&lt;/p&gt;
-&lt;p&gt;==&lt;strong&gt;考虑实际情况，建议这里采用镜像源代理的方式，暂且不用vpn&lt;/strong&gt;==&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;考虑实际情况，建议这里采用镜像源代理的方式，暂且不用vpn&lt;/strong&gt;&lt;/p&gt;
 &lt;h3 id=&#34;一free5gc部署&#34;&gt;一、Free5gc部署
 &lt;/h3&gt;&lt;h4 id=&#34;准备工作&#34;&gt;准备工作
 &lt;/h4&gt;&lt;p&gt;使用命令：&lt;/p&gt;
@@ -889,7 +890,7 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;docker info | grep -A 1 &amp;#34;Registry Mirrors&amp;#34;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;==最后可以尝试验证：==&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;最后可以尝试验证：&lt;/strong&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
@@ -1056,7 +1057,7 @@
 &lt;p&gt;交叉编译指利用不同的平台进行处理，并把安装或编译好的东西转移到所需平台。这种思想不仅仅用于以下案例，可以用到很多地方。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;如果不按照刚才说法设置镜像代理的话，编译过程中也有可能遇到&lt;code&gt;golang bullseye&lt;/code&gt;报错，&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;=&amp;gt; ERROR [internal] load metadata for docker.io/library/golang: 21.5s ------ &amp;gt; [internal] load metadata for docker.io/library/golang:1.21.8-bullseye&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;如果实在不打算使用镜像源，可以利用==交叉编译==在&lt;strong&gt;主机windows&lt;/strong&gt;挂梯子下载docker desktop软件，下载好后在上面搜索golang，选&lt;strong&gt;1.24.0-bullseye&lt;/strong&gt;（我用的&lt;strong&gt;1.23.6&lt;/strong&gt;-bullseye，这俩都行），点击&lt;strong&gt;pull&lt;/strong&gt;，即可把包下载到电脑里。&lt;/p&gt;
+&lt;p&gt;如果实在不打算使用镜像源，可以利用&lt;strong&gt;交叉编译&lt;/strong&gt;在&lt;strong&gt;主机windows&lt;/strong&gt;挂梯子下载docker desktop软件，下载好后在上面搜索golang，选&lt;strong&gt;1.24.0-bullseye&lt;/strong&gt;（我用的&lt;strong&gt;1.23.6&lt;/strong&gt;-bullseye，这俩都行），点击&lt;strong&gt;pull&lt;/strong&gt;，即可把包下载到电脑里。&lt;/p&gt;
 &lt;div align=center&gt;&lt;img src=&#34;17.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;然后在主机打开命令行，输入&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
@@ -1105,7 +1106,7 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;之后&lt;strong&gt;重复原本步骤编译&lt;/strong&gt;就可以。&lt;/p&gt;
 &lt;hr&gt;
-&lt;p&gt;==至此，free5gc容器化部署完成==&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;至此，free5gc容器化部署完成&lt;/strong&gt;&lt;/p&gt;
 &lt;h3 id=&#34;二安装ueransim&#34;&gt;二、安装UERANSIM
 &lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1151,7 +1152,7 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;编译完成就安装成功了。&lt;/p&gt;
 &lt;h3 id=&#34;三启动free5gc和ueransim环境&#34;&gt;三、启动free5gc和ueransim环境
-&lt;/h3&gt;&lt;p&gt;==Free5gc，启动！==&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Free5gc，启动&lt;/strong&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
@@ -1199,7 +1200,7 @@
 &lt;p&gt;修改其中的&lt;strong&gt;amfconfig&lt;/strong&gt;一项下的&lt;strong&gt;address&lt;/strong&gt;为&lt;strong&gt;amf&lt;/strong&gt;的ip，然后&lt;code&gt;Esc&lt;/code&gt;，再输入  &lt;code&gt;:wq&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;表示保存并退出，类似还有 &lt;code&gt;:q  :qa  :exit  :^X&lt;/code&gt;之类的。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;每次重启机器后，amf&lt;/strong&gt;地址可能改变，注意更改。&lt;/p&gt;
-&lt;p&gt;==至此，UERANSIM的基站配置完成==，接下来需要在free5gc中注册UERANSIM的UE部分：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;至此，UERANSIM的基站配置完成&lt;/strong&gt;，接下来需要在free5gc中注册UERANSIM的UE部分：&lt;/p&gt;
 &lt;p&gt;访问地址 http://localhost:5000/可进入到free5gc的webui处，登录：&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;用户名：admin 密码：free5gc&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;之后通过free5gc的webui新增一个ue的注册信息（&lt;strong&gt;否则会报错说无法注册&lt;/strong&gt;），此处配置的UE信息原则上需要和&lt;code&gt;~/UERANSIM/config/free5gc-ue.yaml&lt;/code&gt;中的信息一致，但由于此处UERANSIM的代码作者已经设置好，所以实际上无需做任何更改，直接拉到最下面点create就ok&lt;/p&gt;
@@ -1257,7 +1258,7 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;docker-compose down
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;再重新跑核心网流程==wireshark抓包查看闪退原因==&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;再重新跑核心网流程&lt;strong&gt;wireshark抓包查看闪退原因&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;启动核心网环境&lt;/strong&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1397,8 +1398,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;div align=center&gt;&lt;img src=&#34;116.png&#34; width=400/&gt;&lt;/div&gt;
 &lt;p&gt;如果有包收发，那就证明upf可以上网，所以整个网络连接没有问题。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;问题出在哪里？==IP 转发 和 NAT  配置==&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;我们需要启用 &lt;code&gt;IPv4&lt;/code&gt; 数据包转发功能（将接收到的 IP 数据包从一个网络接口转发到另一个网络接口），以及开启&lt;code&gt;NAT&lt;/code&gt;模式（数据包离开当前网络时进行源地址转换），并允许转发的数据包通过防火墙。==ICMP==&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;问题出在哪里？IP 转发 和 NAT  配置&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;我们需要启用 &lt;code&gt;IPv4&lt;/code&gt; 数据包转发功能（将接收到的 IP 数据包从一个网络接口转发到另一个网络接口），以及开启&lt;code&gt;NAT&lt;/code&gt;模式（数据包离开当前网络时进行源地址转换），并允许转发的数据包通过防火墙。&lt;code&gt;ICMP&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;把&lt;code&gt;docker-compose&lt;/code&gt;文件的&lt;code&gt;upf&lt;/code&gt;部分的&lt;code&gt;command&lt;/code&gt;修改添加以下代码&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -1506,7 +1507,7 @@
 &lt;p&gt;然后添加&lt;strong&gt;端口映射&lt;/strong&gt;38412，此处对amf修改无严格要求。&lt;/p&gt;
 &lt;p&gt;添加upf网口&lt;code&gt;2152:2152 /udp&lt;/code&gt;，经测试ue无法注册信号，产生mac相关报错，原因可能是free5gc默认和ueransim的对齐导致一些文件配置有问题。于是采用修改的核心网，工程文件来源于师兄&lt;code&gt;distributed-core-network-control-plane&lt;/code&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;写在结尾&#34;&gt;写在结尾
-&lt;/h2&gt;&lt;p&gt;==特别鸣谢：两位师兄和两位老师==&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;特别鸣谢：两位师兄和两位老师&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;后期工作：&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
