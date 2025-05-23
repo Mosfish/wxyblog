@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="在THU做的free5gc和分布式核心网，夹杂linux开发">
+<title>5G核心网部署及测试手册</title>
+
+<link rel='canonical' href='https://mosfish.github.io/wxyblog/p/5g%E6%A0%B8%E5%BF%83%E7%BD%91%E9%83%A8%E7%BD%B2%E5%8F%8A%E6%B5%8B%E8%AF%95%E6%89%8B%E5%86%8C/'>
+
+<link rel="stylesheet" href="/wxyblog/scss/style.min.946cca6c6259ef94ac55abfae7c7bf3291ea3ed5eea17ef77500b257217c6710.css"><meta property='og:title' content="5G核心网部署及测试手册">
+<meta property='og:description' content="在THU做的free5gc和分布式核心网，夹杂linux开发">
+<meta property='og:url' content='https://mosfish.github.io/wxyblog/p/5g%E6%A0%B8%E5%BF%83%E7%BD%91%E9%83%A8%E7%BD%B2%E5%8F%8A%E6%B5%8B%E8%AF%95%E6%89%8B%E5%86%8C/'>
+<meta property='og:site_name' content='蚊香鱼的Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-23T12:45:04&#43;08:00'/><meta property='article:modified_time' content='2025-05-23T12:45:04&#43;08:00'/>
+<meta name="twitter:title" content="5G核心网部署及测试手册">
+<meta name="twitter:description" content="在THU做的free5gc和分布式核心网，夹杂linux开发">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "dark");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/wxyblog/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/wxyblog/img/head_hu_956fdddbfb7d687f.gif" width="300"
+                            height="261" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/wxyblog">蚊香鱼的Blog</a></h1>
+            <h2 class="site-description">鱼，我要摸鱼！</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='wenxy59@mail2.sysu.edu.cn'
+                        target="_blank"
+                        title="Email"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/Mosfish'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://mosfish.github.io/'
+                        target="_blank"
+                        title="Homepage"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-building-bank"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" /><path d="M3 10l18 0" /><path d="M5 6l7 -3l7 3" /><path d="M4 10l0 11" /><path d="M20 10l0 11" /><path d="M8 14l0 3" /><path d="M12 14l0 3" /><path d="M16 14l0 3" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/xiangyuwen-mosfish/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/wxyblog/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/wxyblog/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/wxyblog/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/wxyblog/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/wxyblog/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5%E7%BD%91%E7%AB%99/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接&amp;网站</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#一常用指令">一、常用指令</a>
+      <ol>
+        <li><a href="#1基本指令部分">1.基本指令部分</a></li>
+        <li><a href="#2网络空间测试">2.网络空间测试</a></li>
+        <li><a href="#3启动环境部分">3.启动环境部分</a></li>
+      </ol>
+    </li>
+    <li><a href="#二虚拟机linux设置vpn方法">二、虚拟机Linux设置vpn方法</a>
+      <ol>
+        <li><a href="#途径1主机共享vpn">途径1.主机共享vpn</a>
+          <ol>
+            <li><a href="#问题1如果我的vpn没有用clash不知道vpn端口怎么办">问题1：如果我的vpn没有用clash，不知道vpn端口怎么办？</a></li>
+            <li><a href="#问题2为什么我的vpn它通不了外网">问题2：为什么我的vpn它通不了外网？</a></li>
+          </ol>
+        </li>
+        <li><a href="#途径2linux里下载clash">途径2.linux里下载Clash</a></li>
+      </ol>
+    </li>
+    <li><a href="#三主机与虚拟机共享剪贴板">三、主机与虚拟机共享剪贴板</a></li>
+    <li><a href="#四虚拟机关机与挂起">四、虚拟机关机与挂起</a>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#问题1关机后找不到虚拟机咋办">问题1：关机后找不到虚拟机咋办</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#五虚拟机分盘扩容操作">五、虚拟机分盘扩容操作</a>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#问题1虚拟机退出后再启动会卡在初始页面">==问题1：虚拟机退出后再启动会卡在初始页面==</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#六ubuntu桌面相关问题">六、Ubuntu桌面相关问题</a>
+      <ol>
+        <li><a href="#1桌面字标大小">1.桌面字标大小</a></li>
+        <li><a href="#2桌面卡死">2.桌面卡死</a></li>
+      </ol>
+    </li>
+    <li><a href="#七虚拟机没网设置网络图标消失">七、虚拟机没网设置网络图标消失</a></li>
+  </ol>
+
+  <ol>
+    <li><a href="#一free5gc部署">一、Free5gc部署</a>
+      <ol>
+        <li><a href="#准备工作">准备工作</a></li>
+        <li><a href="#构建gtp5g模块">构建GTP5G模块</a></li>
+        <li><a href="#容器化部署free5gc模拟核心网">容器化部署free5gc模拟核心网</a></li>
+        <li><a href="#安装ueransim">安装UERANSIM</a></li>
+      </ol>
+    </li>
+    <li><a href="#二启动free5gc和ueransim环境">二、启动free5gc和ueransim环境</a></li>
+    <li><a href="#三以基站配置测试ueransim软件层">三、以基站配置测试ueransim软件层</a>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#问题1遇到uegnb成功连接且核心网成功配置但是ping不通网">问题1：遇到ue、gnb成功连接且核心网成功配置但是ping不通网</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#四连接实体基站进行测试">四、连接实体基站进行测试</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/wxyblog/categories/%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2/" style="background-color: #4169E1; color: #fff;">
+                技术博客
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/wxyblog/p/5g%E6%A0%B8%E5%BF%83%E7%BD%91%E9%83%A8%E7%BD%B2%E5%8F%8A%E6%B5%8B%E8%AF%95%E6%89%8B%E5%86%8C/">5G核心网部署及测试手册</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            在THU做的free5gc和分布式核心网，夹杂linux开发
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">May 23, 2025</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="free5gc核心网部署与接入测试手册">Free5GC核心网部署与接入测试手册
+</h1><p><font size=4 color="red"> <strong>写在开篇</strong>：</font><font size=4 color="red"> 建议养成<strong>备份</strong>（例如git工具）的好习惯。本文包含Linux开发基础内容、free5gc核心网</font></p>
+<p>起初使用<strong>VMware虚拟机装的Ubuntu桌面版系统</strong>，但是实际工程需要<strong>板载Linux系统</strong>（但是学习初期直接上手，容易因为不熟悉操作而出现诸如网卡连不了网，没声音，拼音输入法等软硬件不适配类似的各种问题）可以<strong>先基于虚拟机进行学习</strong>，入门后再基于板载Linux系统开发核心网。</p>
+<h1 id="linux开发基本配置与指令">linux开发基本配置与指令
+</h1><h2 id="一常用指令">一、常用指令
+</h2><h3 id="1基本指令部分">1.基本指令部分
+</h3><p>复制 Ctrl+Shift+C</p>
+<p>粘贴 Ctrl+Shift+V</p>
+<p>更新包列表</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt update
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>查网卡ip</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">Ifconfig</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 记得提前安装ifconfig网络工具 sudo apt install net-tools</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>或者</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> ip a
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>显示当前路径</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">pwd
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>进入文件夹</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd &lt;文件夹名&gt;
+</span></span><span class="line"><span class="cl"># 例如 cd free5gc-compose
+</span></span><span class="line"><span class="cl"># 或者进入多个内嵌文件夹如 cd ~/free5gc-compose/config
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>查询网站ip地址</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">nslookup baidu.com
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>查各网元运行情况、地址</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker-compose ps
+</span></span><span class="line"><span class="cl">或看全部网元：  docker ps -a
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>停止容器网元运行</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker-compose down
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>启动容器网元并后台挂机</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker-compose up -d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>查看运行日志</strong>（以amf为例，可换成smf、upf等）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker logs &lt;id&gt; 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><em>例如：<code>docker logs amf</code></em></p>
+<p><strong>查找单个网元信息</strong>（例如amf）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker inspect amf
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>进入容器进行交互</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker exec -it &lt;容器ID或容器名(如amf)&gt; sh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>或者<code>docker exec -it &lt;容器ID或容器名(如amf)&gt; bash</code></p>
+<p>按照格式查找所有网元的ip地址（没有启动或者出错就不显示）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker inspect -f &#39;{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}&#39; $(docker ps -aq)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>查询所有网元mac地址</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker inspect -f &#39;{{.Name}} - {{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}&#39; $(docker ps -aq)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我的地址（每个人的都不同，根据实际情况可以修改）：<code> /home/wxy/free5gc-compose/config/amfcfg.yaml</code></p>
+<p>查看端口情况</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">etstat -tuln | grep 38412
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>看防火墙设置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo iptables -L
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>看网桥</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">brctl show
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>查看网桥连接的ip地址</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">brctl showmacs &lt;网桥名&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>看路由</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ip route show
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>添加网桥</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo brctl addif &lt;bridge&gt; &lt;网卡名&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>==<strong>Linux启动wireshark抓包</strong>——需要安装linux的wireshark然后启动：	<code>sudo wireshark</code>==</p>
+<h3 id="2网络空间测试">2.网络空间测试
+</h3><p>一般是用<code>docker inspect amf</code>或者<code>docker logs amf</code>来对amf、smf、upf之类的进行测试，</p>
+<p>也可以进入网络空间进行进一步测试例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker exec -it upf bash
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>不过最好是利用pid方法进入网络空间进行<code>ifconfig</code>或者<code>ping</code>操作</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ps aux | grep upf #获取进程（可以得到各种进程id）
+</span></span><span class="line"><span class="cl">pgrep -f upf #获取pid：
+</span></span><span class="line"><span class="cl">sudo nsenter -t &lt;pid&gt; -n #进入网络空间
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其余指令还有kill之类的可以终止进程。</p>
+<p>除此之外有的时候<code>ping</code>网站可能会遇到<code>name resolution</code>的报错，可以换成ip地址，指令如下，以百度为例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">nslookup baidu.com
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>不过ping命令有的时候会被网页阻拦，用curl命令比较合适，例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">curl www.baidu.com
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="3启动环境部分">3.启动环境部分
+</h3><p>启动核心网和ueransim环境分以下三步，根据实际情况可以更改代码：</p>
+<p><strong>启动核心网环境</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/free5gc-compose
+</span></span><span class="line"><span class="cl">sudo docker-compose up -d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>启动UERANSIM的gnb</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/UERANSIM/build
+</span></span><span class="line"><span class="cl">./nr-gnb -c ../config/free5gc-gnb.yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>启动ue</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/UERANSIM/build
+</span></span><span class="line"><span class="cl">sudo ./nr-ue -c ../config/free5gc-ue.yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>虚拟网卡测试方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ping www.baidu.com -I uesimtun0
+</span></span><span class="line"><span class="cl"># 或者 curl www.baidu.com -I uesimtun0
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="二虚拟机linux设置vpn方法">二、虚拟机Linux设置vpn方法
+</h2><h3 id="途径1主机共享vpn">途径1.主机共享vpn
+</h3><p>参考：<a class="link" href="https://blog.csdn.net/nomoremorphine/article/details/138738065"  target="_blank" rel="noopener"
+    >VMware Ubuntu虚拟机 使用主机VPN 配置（简单、可行）-CSDN博客</a></p>
+<p>（图片资源没保存，所以只有文字了）</p>
+<div align=center><img src="2.png" width=300/></div>
+<center><font size=2>一定要记得开篇说的资源备份啊呜呜呜</font></center>
+<p>打开虚拟网络编辑器，可以看到虚拟机开启的NAT模式是<strong>VMnet8</strong>。</p>
+<p>主机windows+R输入cmd打开命令行输入<code>ipconfig</code> ，得到VMnet8的ip：192.168.154.1。之后查询vpn端口，以clash为例，右上角记下vpn的端口，之后允许局域网记得打开。</p>
+<p>在虚拟机的设置中打开proxy代理，选择manual，</p>
+<p>虚拟机网络地址与VPN Port需要根据本机确定，左边四个填VMnet4的ip，右边四个填vpn的端口即可。</p>
+<h4 id="问题1如果我的vpn没有用clash不知道vpn端口怎么办">问题1：如果我的vpn没有用clash，不知道vpn端口怎么办？
+</h4><p>参考：<a class="link" href="https://blog.csdn.net/qq_55888300/article/details/131498092"  target="_blank" rel="noopener"
+    >在windows中如何查看代理的地址和端口_怎么查看自己电脑的代理地址-CSDN博客</a></p>
+<p>Windows+R输入control打开主机的控制面板，点击「网络和Internet」，</p>
+<p>在「internet选项」中点击「连接」的「局域网设置」</p>
+<p>启用代理服务器，不用打勾，保持默认就行，右下角端口即为vpn端口。</p>
+<div align=center><img src="3.png" width=300/></div>
+<h4 id="问题2为什么我的vpn它通不了外网">问题2：为什么我的vpn它通不了外网？
+</h4><p>一般而言，如果浏览器可以打开谷歌就证明梯子没问题。那么问题就出在——==实际命令行终端走代理需要进一步配置端口==</p>
+<p>已知代理端口（例如7890），之后就set一下http、https两个协议走这个端口，类似于</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">set http_proxy=http://127.0.0.1:7890 &amp; set https_proxy=http://127.0.0.1:7890
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>但是具体还是得看具体的设备，这种事情可以问一下ai。</p>
+<h3 id="途径2linux里下载clash">途径2.linux里下载Clash
+</h3><p>csdn里有相关内容，请自行搜索，配置起来较麻烦，</p>
+<p><a class="link" href="https://clashx2.com/38942.html"  target="_blank" rel="noopener"
+    >Linux下Clash翻墙完整使用指南 | Clash中文教程网</a>。</p>
+<p>这个教程写的不是很清楚，可以拓展一下。</p>
+<h2 id="三主机与虚拟机共享剪贴板">三、主机与虚拟机共享剪贴板
+</h2><p>参考：<a class="link" href="https://blog.csdn.net/m0_48465029/article/details/137264756"  target="_blank" rel="noopener"
+    >主机和VMware虚拟机间共享剪贴板方法_vmware workstation 中启用了剪贴板共享功能-CSDN博客</a></p>
+<p>为啥主机复制过去虚拟机粘贴不了？有的时候可以复制粘贴有的时候不能？一般来说，先设置虚拟机，需要保证客户机隔离里面是<strong>启用复制粘贴</strong>的（默认启用）</p>
+<div align=center><img src="1.png" width=400/></div>
+<p>如果这个时候还不行，可以需要安装虚拟机增强工具包<code>open-vm-tools</code>和<code>open-vm-tools-desktop</code>，安装命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">open</span><span class="o">-</span><span class="n">vm</span><span class="o">-</span><span class="n">tools</span>
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">open</span><span class="o">-</span><span class="n">vm</span><span class="o">-</span><span class="n">tools</span><span class="o">-</span><span class="n">desktop</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后重启系统：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo reboot
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="四虚拟机关机与挂起">四、虚拟机关机与挂起
+</h2><p>虚拟机关机就是不再占用资源，但是再次开启需要重启；挂起就是虚拟机保存挂起的状态，打开不需要重启。</p>
+<p>==<em>最重要的事情是<strong>记得自己虚拟机的路径</strong></em>==</p>
+<h4 id="问题1关机后找不到虚拟机咋办">问题1：关机后找不到虚拟机咋办
+</h4><p>点击<code>扫描虚拟机</code>，找到.vmx文件打开就行。</p>
+<div align=center><img src="4.png" width=300/></div>
+<h2 id="五虚拟机分盘扩容操作">五、虚拟机分盘扩容操作
+</h2><p>有的时候给虚拟机分盘内存太小，当盘快满的时候会弹出警告，一定要提前采取措施来分盘，否则会启动不了虚拟机。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">lsblk #检查磁盘情况
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">df -h	#检查磁盘占用情况
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div align=center><img src="5.png" width=500/></div>
+<p>可以看到我主要的盘sda3占用了53%。</p>
+<p>分盘主要是两个操作</p>
+<ul>
+<li>
+<p>划出内存</p>
+<p>编辑虚拟机设置-硬盘-拓展，然后选择扩展后的硬盘空间</p>
+<div align=center><img src="6.png" width=600/></div>
+</li>
+<li>
+<p>分配空间</p>
+<p>考虑两种方法可以，有一个是类似于windows的图形化分盘，下载并启动<code>gparted</code>，这个方法在<a class="link" href="https://blog.csdn.net/hktkfly6/article/details/123302335"  target="_blank" rel="noopener"
+    >VMware虚拟机扩容磁盘，有很详细图文_虚拟机硬盘空间-CSDN博客</a>有提及。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt-get update
+</span></span><span class="line"><span class="cl">sudo apt install gparted
+</span></span><span class="line"><span class="cl">sudo gparted
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在图形界面中可以选择 <code>/dev/sda3</code> 分区，然后调整它的大小。</p>
+<p>或者利用<code>fdisk</code>（推荐），输入命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo fdisk /dev/sda
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>再输入<code>p</code>得到分区列表预览：</p>
+<div align=center><img src="7.png" width=400/></div>
+<p><code>fdisk</code> 中执行命令汇总如下</p>
+<ul>
+<li>
+<p>输入 <code>p</code> 显示当前的分区列表，记下 <code>/dev/sda3</code> 的起始位置（例如 1054720）。</p>
+</li>
+<li>
+<p>输入 <code>d</code> 删除 <code>/dev/sda3</code>，并确保输入分区号（3）。注意，这不会删除数据，分区号只是从分区表中移除。</p>
+</li>
+<li>
+<p>输入 <code>n</code> 创建新分区，选择 <code>3</code> 为分区号，使用 1054720为起始扇区（与之前一致），并设置结束扇区为新的磁盘容量（可以选择最大可用空间）。</p>
+</li>
+<li>
+<p>输入 <code>w</code> 保存更改并退出 <code>fdisk</code>。</p>
+<p>可能遇见这种情况，但是如果默认系统是linux一般用不上：<em><strong><font size=1>输入 <code>t</code> 设置分区类型，选择 <code>83</code>（Linux 文件系统）。</font></strong></em></p>
+</li>
+</ul>
+<h4 id="问题1虚拟机退出后再启动会卡在初始页面">==问题1：虚拟机退出后再启动会卡在初始页面==
+</h4><p>类似于这样，进不去虚拟机，一直卡在这个地方：</p>
+<div align=center><img src="8.png" width=400/></div>
+<p><strong>因为没注意虚拟机盘满了</strong>，卡在初始界面进不去，所以要在盘快满的时候<strong>提前分盘</strong>。</p>
+<p>==VMware卡在命令行/dev/sda3 clean&hellip; 界面不动的解决办法：==</p>
+<p>参考https://blog.csdn.net/SunshineLiy/article/details/134372529</p>
+<p>显示分区已满，需要找到这个分区一些没用的文件删掉，先进去虚拟机能分盘再说。</p>
+<p><strong>进入 grub 模式</strong>，重启虚拟机，在显示到这个界面的时候</p>
+<div align=center><img src="9.png" width=400/></div>
+<p>快速按下 <code>Shift </code>不要松，直到出现grub界面（这一步需要反应快一些，多试几遍就可以，如果操作正确的话，grub界面很快就会出来，如果按Shift三秒没有出现，大概率是操作错误了。此方法如果进不去，也可以参考网上也有其他进入grub的方法）</p>
+<p><strong>进入ubuntu(高级模式)</strong>，选择第一个advanced</p>
+<div align=center><img src="10.png" width=400/></div>
+<p>之后选择第二个</p>
+<div align=center><img src="11.png" width=400/></div>
+<p>选择root</p>
+<div align=center><img src="12.png" width=400/></div>
+<p>选择root后会弹出两行提示，直接回车就可以</p>
+<div align=center><img src="13.png" width=400/></div>
+<p>输入以下指令看到磁盘使用情况</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> df -h
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div align=center><img src="14.png" width=400/></div>
+<p>sda3确实100%满了，所以我们需要在命令行来清理一些文件。</p>
+<p>查看根目录下所有文件和目录的磁盘使用情况</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">du -sh /*
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>找到自己占用空间较多的文件目录</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">rm -f /文件名/ 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>删除那些暂时没有用的大文件，reboot 重启。然后赶紧增加空间！！！</p>
+</li>
+</ul>
+<h2 id="六ubuntu桌面相关问题">六、Ubuntu桌面相关问题
+</h2><h3 id="1桌面字标大小">1.桌面字标大小
+</h3><p>调整<strong>分辨率</strong>和<strong>缩放</strong>就行。缩放到200%左右比较合适，在setting里面设置。有的时候会有桌面越来越小的bug，在设置里面改就可以。</p>
+<h3 id="2桌面卡死">2.桌面卡死
+</h3><p>输入以下命令重启桌面等一会就行：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo restart lightdm
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="七虚拟机没网设置网络图标消失">七、虚拟机没网设置网络图标消失
+</h2><p>如果只是网络连接处显示问号，可以在终端输入：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">vim</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">NetworkManager</span><span class="o">/</span><span class="n">NetworkManager</span><span class="o">.</span><span class="n">state</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>保证这里是true。重启虚拟机，检查情况。如果还没有反应可以重启主机，再排查</p>
+<p>参考<a class="link" href="https://zhuanlan.zhihu.com/p/674945911"  target="_blank" rel="noopener"
+    >彻底解决VM ubuntu在虚拟机找不到网卡无法上网的问题 - 知乎</a></p>
+<p>还是不行在setting里面找network关了重开，而如果第一行开启按钮没有显示的话可能需要用以下方式：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">service</span> <span class="n">NetworkManager</span> <span class="n">stop</span>
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">rm</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">NetworkManager</span><span class="o">/</span><span class="n">NetworkManager</span><span class="o">.</span><span class="n">state</span>
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">service</span> <span class="n">NetworkManager</span> <span class="n">start</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>最后的办法是还原默认设置后再看看有没有，没有的话再进行上一步输入命令。</p>
+<div align=center><img src="15.png" width=400/></div>
+<h1 id="free5gc部署ueransim安装">Free5gc部署、UERANSIM安装
+</h1><p>主要参考：<a class="link" href="https://www.freebuf.com/articles/wireless/268397.html"  target="_blank" rel="noopener"
+    >Free5gc+UERANSIM模拟5G网络环境搭建及基本使用 - FreeBuf网络安全行业门户</a></p>
+<p>此处采用<strong>docker容器化部署</strong>，其他独立化部署可以看教程，根据实际情况同时参考教程和本文档。</p>
+<p>==<strong>考虑实际情况，建议这里采用镜像源代理的方式，暂且不用vpn</strong>==</p>
+<h2 id="一free5gc部署">一、Free5gc部署
+</h2><h3 id="准备工作">准备工作
+</h3><p>使用命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">uname -a
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>此命令用于确认安装的虚拟机内核版本，要求的内核版本为5.0.0-23-generic或5.4.0及之后的版本,</p>
+<div align=center><img src="16.png" width=400/></div>
+<p><font size=1><em>若当前虚拟机内核版本不符合要求，则需要更换内核，使用以下命令安装5.0.0-23-generic的内核，注意用sudo是管理员权限的操作，需要输入密码，为了安全，密码一般是不显示的但是可以输入，并不是bug，输入后按回车。</em></font></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install &#39;linux-image-5.0.0-23-generic&#39; 
+</span></span><span class="line"><span class="cl">sudo apt install &#39;linux-headers-5.0.0-23-generic
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><font size=1>安装完成后，需要重启虚拟机，并在启动时<strong>连按</strong>shift键，进入grub引导页，更换启动的Linux内核。</font></p>
+<p>之后安装基本组件：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">git</span><span class="o">-</span><span class="n">all</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">curl</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">make</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">gcc</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">g</span><span class="o">++</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">autoconf</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">libtool</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">pkg</span><span class="o">-</span><span class="n">config</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">libmnl</span><span class="o">-</span><span class="n">dev</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">libyaml</span><span class="o">-</span><span class="n">dev</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><font size=2><strong>如果人为设置了vpn就不用按照教程里替换源了。</strong></font>之后安装go语言环境，注意安装go语言环境时必须为普通用户安装，否则会导致后续安装出现问题。输入命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">go
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>以确认是否存在其他版本的go，若存在，则通过以下命令删除</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo rm -rf /usr/local/go
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>之后安装最新版本的go：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~ 
+</span></span><span class="line"><span class="cl">wget https://dl.google.com/go/go1.20.4.linux-amd64.tar.gz 
+</span></span><span class="line"><span class="cl">sudo tar -C /usr/local -zxvf go1.20.4.linux-amd64.tar.gz
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>安装完成后，需要通过以下命令配置环境变量<font size=1><strong>（此过程按回车不会有输出）</strong></font></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">go</span><span class="o">/</span><span class="p">{</span><span class="n">bin</span><span class="p">,</span><span class="n">pkg</span><span class="p">,</span><span class="n">src</span><span class="p">}</span> 
+</span></span><span class="line"><span class="cl"><span class="n">echo</span> <span class="s1">&#39;export GOPATH=$HOME/go&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">~/.</span><span class="n">bashrc</span> 
+</span></span><span class="line"><span class="cl"><span class="n">echo</span> <span class="s1">&#39;export GOROOT=/usr/local/go&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">~/.</span><span class="n">bashrc</span> 
+</span></span><span class="line"><span class="cl"><span class="n">echo</span> <span class="s1">&#39;export PATH=$PATH:$GOPATH/bin:$GOROOT/bin&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">~/.</span><span class="n">bashrc</span> 
+</span></span><span class="line"><span class="cl"><span class="n">source</span> <span class="o">~/.</span><span class="n">bashrc</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>之后输入命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">go
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>#有版本号等输出就行。安装成功，再补充安装以下模块，该模块为free5gc独立部署的<strong>日志模块，容器化部署也可以安装：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#go get -u github.com/sirupsen/logrus
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>通过官方安装脚本安装docker，</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>安装完成后，运行命令docker &ndash;version验证。之后需要安装docker-compose，通过以下命令完成：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="s2">&#34;https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)&#34;</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>重启docker服务即可完成docker的部署：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">systemctl restart docker
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>完成后，需要将当前<strong>普通用户</strong>加入docker用户组，docker用户组在上述安装时自动创建，无需手动创建：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo gpasswd -a $USER docker #将当前普通用户加入docker用户组 
+</span></span><span class="line"><span class="cl">newgrp docker #更新docker用户组
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>此步目的在于防止后续free5gc容器化部署时，到make base步骤，出现permission denied。</p>
+<p>安装cmake：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> sudo snap install cmake –classic
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>安装mongodb</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt -y update 
+</span></span><span class="line"><span class="cl">sudo apt -y install mongodb wget git 
+</span></span><span class="line"><span class="cl">sudo systemctl start mongodb
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>此时可能会报错<code>Package 'mongodb' has no installation candidate</code>，有可能因为ubuntu没更新找不到安装包，可以试试导入mongodb的公钥，运行以下命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-archive-keyring.gpg
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>并添加其到apt，</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">echo &#34;deb [signed-by=/usr/share/keyrings/mongodb-archive-keyring.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse&#34; | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>更新包列表：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt-get update
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>安装mongodb：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt-get install mongodb-org
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>之后可以选择性安装yarn**（独立化部署的话则是必须）**</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+</span></span><span class="line"><span class="cl">echo &#34;deb https://dl.yarnpkg.com/debian/ stable main&#34; | sudo tee /etc/apt/sources.list.d/yarn.list
+</span></span><span class="line"><span class="cl">sudo apt update &amp;&amp; sudo apt install yarn
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>==直接使用没有虚拟机模式的3588，有限制，交换机==，非无感</p>
+<h3 id="构建gtp5g模块">构建GTP5G模块
+</h3><p><strong>注意构建GTP5G</strong>模块时，需要用普通用户构建，否则后续使用时会出错</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd~
+</span></span><span class="line"><span class="cl">git clone https://github.com/free5gc/gtp5g.git
+</span></span><span class="line"><span class="cl">cd gtp5g
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>编译</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">make 
+</span></span><span class="line"><span class="cl">sudo make install
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>此时可能会遇到报错，如果是类似于<code>warning: the compiler differs from the one used to build the kernel</code>等，原因是找不到那几个编译器。</p>
+<p>需要安装：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt update
+</span></span><span class="line"><span class="cl">sudo apt install gcc-12
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后重新编译：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">make clean
+</span></span><span class="line"><span class="cl">make
+</span></span><span class="line"><span class="cl">sudo make install
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="容器化部署free5gc模拟核心网">容器化部署free5gc模拟核心网
+</h3><p>首先，通过git clone下载项目代码（注意这里和教程文章的不太一样，教程里面那个链接好像用不了）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~ 
+</span></span><span class="line"><span class="cl">git clone https://github.com/free5gc/free5gc-compose.git
+</span></span><span class="line"><span class="cl">cd free5gc-compose
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong><font size=1>如果有vpn就不用按照文章里说的改代理</font></strong></p>
+<p>编译代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/free5gc-compose 
+</span></span><span class="line"><span class="cl">make base
+</span></span><span class="line"><span class="cl">docker-compose build
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><font size=1.5>其中docker-compose build一步可能报版本错误，原因在于上面安装docker、docker-compose时可能安装了较低版本的docker、docker-compose，此时可以选择重装docker、docker-compose或者修改docker-compose.yaml文件中第一行版本号3.8为当前版本，建议优先选择重装docker、docker-compose，以回避未知错误，可以通过命令docker &ndash;version命令查询当前版本。（不过如果是按教程里的话一般没问题）</font></p>
+<p>编译过程中也有可能遇到<code>golang bullseye</code>报错，一般是由于vpn的速度太慢超时、或者ping不了外网，报错信息类似于：</p>
+<p><code>=&gt; ERROR [internal] load metadata for docker.io/library/golang: 21.5s ------ &gt; [internal] load metadata for docker.io/library/golang:1.21.8-bullseye</code></p>
+<p>比较推荐的方法是按照第二部分搞个linux的梯子出来，如果没有的话，可以在<strong>主机windows</strong>挂梯子下载docker desktop软件：</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image006.png" alt="img" style="zoom:67%;" />
+<p>下载好后在上面搜索golang，选<strong>1.24.0-bullseye</strong>（我用的<strong>1.23.6</strong>-bullseye，这俩都行），点击<strong>pull</strong>，即可把包下载到电脑里。</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image008.png" alt="img" style="zoom:67%;" />
+<p>然后在主机打开命令行，输入</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker images
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>，可以看到包已经下载到了主机里，然后输入命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker save -o E:\go\golang_1.24.0-bullseye.tar golang:1.24.0-bullseye
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以把包保存到电脑路径里</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image010.png" alt="img" style="zoom:67%;" />
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image012.png" alt="img" style="zoom:67%;" />
+<p>从主机把压缩包拷贝到虚拟机：</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image014.png" alt="img" style="zoom:67%;" />
+<p>在虚拟机输入</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/free5gc-compose/base
+</span></span><span class="line"><span class="cl">vim Dockerfile
+</span></span></code></pre></td></tr></table>
+</div>
+</div><img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image016.png" alt="img" style="zoom:67%;" />
+<p>输入<code>I</code>，进入修改，把版本号改成所用版本(1.24.0之类的)，然后<code>Esc</code>，输入命令<code>:wq</code>（带冒号）</p>
+<p>即可退出修改。</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image018.png" alt="img" style="zoom:67%;" />
+<p>然后虚拟机终端输入：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">docker</span> <span class="nb">load</span> <span class="o">&lt;</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">golang_1</span><span class="o">.</span><span class="mf">24.0</span><span class="o">-</span><span class="n">bullseye</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>之后<strong>重复原本步骤编译</strong>就可以。</p>
+<p>也可以考虑手动添加国内镜像源代理，类似于中科大的镜像网站（此处可以改成阿里云华为云等）：</p>
+<p>命令行输入</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl"> &#34;registry-mirrors&#34;: [&#34;https://hub-mirror.c.163.com&#34;, &#34;https://docker.mirrors.ustc.edu.cn&#34;]
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>改完后重启docker</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo systemctl restart docker
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后按照上述步骤<strong>重新编译</strong>。</p>
+<p>==至此，free5gc容器化部署完成==</p>
+<h3 id="安装ueransim">安装UERANSIM
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~ 
+</span></span><span class="line"><span class="cl">git clone https://github.com/aligungr/UERANSIM
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="n">upgrade</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">make</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">g</span><span class="o">++</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">libsctp</span><span class="o">-</span><span class="n">dev</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">lksctp</span><span class="o">-</span><span class="n">tools</span> 
+</span></span><span class="line"><span class="cl"><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">iproute2</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>编译代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/UERANSIM 
+</span></span><span class="line"><span class="cl">make
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>编译完成就安装成功了。</p>
+<h2 id="二启动free5gc和ueransim环境">二、启动free5gc和ueransim环境
+</h2><p>==Free5gc，启动！==</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/free5gc-compose 
+</span></span><span class="line"><span class="cl">docker-compose up -d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>之后</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ifconfig
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这是查看网卡地址，启动free5gc后，会在本地虚拟化出一系列的网卡，这一步需要关注的是原先虚拟机自带的网卡，通常这类网卡的ip地址均处于<code>192.168.*.*</code>网段，网卡名类似<code>ens33，eth0</code>之类，可以以此特征区分出来</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image020.png" alt="img" style="zoom:50%;" />
+<p>接下来需要查看并记录amf网元的ip地址：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker inspect amf
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>找到上面记录有&quot;IPAddress&quot;: 的一行，后面记录的即是amf的ip地址</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image022.png" alt="img" style="zoom:67%;" />
+<p>记录下这两个ip地址后，就可以完成UERANSIM中gnb的配置了，通过修改<code>free5gc-gnb.yaml</code>配置文件完成这一步操作：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/UERANSIM/config/ 
+</span></span><span class="line"><span class="cl">vim free5gc-gnb.yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>输入I进行修改模式，需要修改其中的<strong>ngapIp</strong>、<strong>gtpIp</strong>为<strong>本机</strong>ip</p>
+<p>修改其中的<strong>amfconfig</strong>一项下的<strong>address</strong>为<strong>amf</strong>的ip，然后<code>Esc</code>，再输入  <code>:wq</code></p>
+<p>表示保存并退出，类似还有 <code>:q  :qa  :exit  :^X</code>之类的。</p>
+<p><strong>每次重启机器后，amf</strong>地址可能改变，注意更改。</p>
+<p>==至此，UERANSIM的基站配置完成==，接下来需要在free5gc中注册UERANSIM的UE部分：</p>
+<p>访问地址 http://localhost:5000/可进入到free5gc的webui处，登录：</p>
+<p><code>用户名：admin 密码：free5gc</code></p>
+<p>之后通过free5gc的webui新增一个ue的注册信息（<strong>否则会报错说无法注册</strong>），此处配置的UE信息原则上需要和<code>~/UERANSIM/config/free5gc-ue.yaml</code>中的信息一致，但由于此处UERANSIM的代码作者已经设置好，所以实际上无需做任何更改，直接拉到最下面点create就ok</p>
+<p><img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image024.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="img"
+	
+	
+></p>
+<p><strong>之后启动UERANSIM模拟设备</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/UERANSIM/build#启动一个shell，执行启动gnb的流程
+</span></span><span class="line"><span class="cl">./nr-gnb -c ../config/free5gc-gnb.yaml#通过nr-gnb程序，指定使用的gnb配置文件，启动模拟基站
+</span></span></code></pre></td></tr></table>
+</div>
+</div><img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image026.png" alt="img" style="zoom:67%;" />
+<p><strong>另起</strong>一个shell，执行启动UE的流程</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/UERANSIM/build #通过nr-ue程序，指定使用的ue配置文件，启动模拟用户设备
+</span></span><span class="line"><span class="cl">sudo ./nr-ue -c ../config/free5gc-ue.yaml #此处因为需要虚拟出一张ue的网卡，所以需要root权限执行
+</span></span></code></pre></td></tr></table>
+</div>
+</div><img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image028.png" alt="img" style="zoom:67%;" />
+<p>启动的<strong>两个shell不可关闭</strong>，可以后台执行，但建议前台执行方便实时查看状态信息。启动完成后，执行<code>ifconfig</code>可以看到多了一张名为<code>uesimtun0</code>的网卡；另外，在<strong>free5gc</strong>的<strong>webui</strong>处，查看<strong>REALTIME STATUS</strong>可以看到有一个UE处于连接状态，此时即证明UERANSIM的环境启动成功：</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image030.png" alt="img" style="zoom: 67%;" />
+<p>之后测试一下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ping www.baidu.com -I uesimtun0
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>能通就ok，在free5gc官网也可以看到connect信息。</p>
+<h2 id="三以基站配置测试ueransim软件层">三、以基站配置测试ueransim软件层
+</h2><p><strong>修改PLMN值，IP不变，进行测试、注册</strong></p>
+<p>先改文件里PLMN的<code>mcc、mnc</code>分别为<code>001、01</code>，按照自己的目录（我的涉及<code>/home/wxy/free5gc-compose/config/amfcfg.yaml、gnbcfg.yaml、smfcfg.yaml、uecfg.yaml，/home/wxy/UERANSIM/config/free5gc-gnb.yaml、free5gc-ue.yaml</code>，包括修改ue里<code>supi</code>的前五位为<code>00101</code>：</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image032.png" alt="img" style="zoom: 50%;" />
+<p>还有<code>nrfcfg</code>文件的<code>mcc、mnc</code></p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image034.png" alt="img" style="zoom: 50%;" />
+<p>改完save，然后关闭docker</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker-compose down
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>再重新跑核心网流程==wireshark抓包查看闪退原因==</p>
+<p><strong>启动核心网环境</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/free5gc-compose
+</span></span><span class="line"><span class="cl">sudo docker-compose up -d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>启动UERANSIM的gnb</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/UERANSIM/build
+</span></span><span class="line"><span class="cl">./nr-gnb -c ../config/free5gc-gnb.yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>启动ue</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/UERANSIM/build
+</span></span><span class="line"><span class="cl">sudo ./nr-ue -c ../config/free5gc-ue.yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>并重新create，修改<code>mcc、mnc、id</code>后注册</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image036.png" alt="img" style="zoom: 67%;" />
+<p>然后根据一般ueransim测试流程启动，查询有无报错，并用uesimtun0来ping一下百度。</p>
+<p>虚拟网卡测试</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ping www.baidu.com -I uesimtun0
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>之后需要修改ip：
+分别在<code>docker-compose</code>文件里面添加upf的ip、设置amf的ip，还有network的范围</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image038.png" alt="img" style="zoom:67%;" />
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image040.png" alt="img" style="zoom:67%;" />
+<p><strong>地址范围subnet要可以覆盖，改为<code>192.168.0.0/16</code></strong></p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image042.png" alt="img" style="zoom:67%;" />
+<p>由于<code>n3iwue、free5gc-n3iwf</code>两部分此时用不到，可以把这两段代码<strong>分别注释掉</strong>。我们要修改amf为<code>192.168.2.198</code>，smf内的upf与N3口<code>192.168.8.198</code>。</p>
+<p>在amfcfg将<code>ngapip</code>改为基站的<code>192.168.2.198</code></p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image044.png" alt="img" style="zoom:67%;" />
+<p>smfcfg的upf ip改为基站upf <code>192.168.8.198</code></p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image046.png" alt="img" style="zoom:67%;" />
+<p>以及upfcfg的N3 ip为<code>192.168.8.198</code></p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image048.png" alt="img" style="zoom:67%;" />
+<p>改完保存，把docker给down掉关闭，然后重复一般测试流程，成功标志为</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ping baidu.com -I uesimtun0
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以收到包。</p>
+<img src="C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 171144.png" style="zoom:50%;" />
+<h4 id="问题1遇到uegnb成功连接且核心网成功配置但是ping不通网">问题1：遇到ue、gnb成功连接且核心网成功配置但是ping不通网
+</h4><p>这个问题比较随机，因为每个人虚拟机、或者linux子系统的默认配置不同。诊断方法可以考虑进入upf的网络空间进行调整；或者docker logs amf那几个看一下日志；或根据路由、配合抓包进行诊断。具体命令在本文档第一部分。</p>
+<p>为方便理解，<strong>各模块功能见图：</strong></p>
+<p>介绍与基本架构：
+<a class="link" href="https://blog.csdn.net/qq397115761/article/details/132756679"  target="_blank" rel="noopener"
+    >【5G】5G 核心网（5GC）基本架构_5g核心网架构-CSDN博客</a></p>
+<img src="C:\Users\wxy11\OneDrive\Desktop\tempfromvsus\6.png" style="zoom: 33%;" />
+<img src="C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 191928.png" style="zoom:67%;" />
+<p>查询UERANSIM内的UE和GNB有没有建立PDU连接：</p>
+<img src="C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 171333.png" style="zoom: 25%;" />
+<img src="C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 171340.png" alt="屏幕截图 2025-02-19 171340" style="zoom: 25%;" />
+<p>如图可见二者连接正常，说明ue与gnb连接正常。之后可以分别查看一下amf、upf有没有正常启动、报错，用以下命令检查日志：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker logs amf
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker logs upf
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果没有报错，排查gnb通过N3口连接upf：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ping 192.168.8.198 -I uesimtun0
+</span></span></code></pre></td></tr></table>
+</div>
+</div><img src="C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 185827.png" style="zoom:50%;" />
+<p>还是通的话，可以进入upf的网络空间，看upf联网如何，</p>
+<p>利用pid方法进入网络空间进行<code>ifconfig</code>或者<code>ping</code>操作</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">pgrep -f upf #获取pid：
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo nsenter -t &lt;pid&gt; -n #进入网络空间
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>之后，在里面输入：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ifconfig
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>查找网络工具，若有<code>upfgtp</code>或者<code>eth0</code>就可以，之后输入ping命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ping 8.8.8.8
+</span></span></code></pre></td></tr></table>
+</div>
+</div><img src="C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 190437.png" style="zoom:50%;" />
+<p>如果有包收发，那就证明upf可以上网，所以整个网络连接没有问题。</p>
+<p><strong>问题出在哪里？==IP 转发 和 NAT  配置==</strong></p>
+<p>我们需要启用 <code>IPv4</code> 数据包转发功能（将接收到的 IP 数据包从一个网络接口转发到另一个网络接口），以及开启<code>NAT</code>模式（数据包离开当前网络时进行源地址转换），并允许转发的数据包通过防火墙。==ICMP==</p>
+<p>把<code>docker-compose</code>文件的<code>upf</code>部分的<code>command</code>修改添加以下代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">command: 
+</span></span><span class="line"><span class="cl">      - /bin/bash
+</span></span><span class="line"><span class="cl">      - -c
+</span></span><span class="line"><span class="cl">      - |
+</span></span><span class="line"><span class="cl">        sysctl -w net.ipv4.ip_forward=1
+</span></span><span class="line"><span class="cl">        iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+</span></span><span class="line"><span class="cl">        iptables -I FORWARD 1 -j ACCEPT
+</span></span><span class="line"><span class="cl">        ./upf -c /free5gc/config/upfcfg.yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><img src="C:\Users\wxy11\OneDrive\Pictures\Screenshots\屏幕截图 2025-02-19 191155.png" style="zoom:50%;" />
+<p>修改后<code>save</code>，然后把ueransim关掉，docker给down掉，重新跑一遍启动流程，之后测试</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ping www.baidu.com -I uesimtun0
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>跑通成功。</p>
+<h2 id="四连接实体基站进行测试">四、连接实体基站进行测试
+</h2><p>用SSH来连接基站，需要下载ssh工具</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt update
+</span></span><span class="line"><span class="cl">sudo apt install openssh-client
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>启动基站流程：</p>
+<p>分别打开<strong>三个</strong>终端shell</p>
+<p>在第一个shell输入</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ssh root@192.168.2.246
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>输入密码，然后输入</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd /root/yzmm/rel/GNB/phy/bin ./run.sh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>挂在后台，别关闭。</p>
+<p>在第二个shell输入</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ssh root@192.168.2.246
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>输入密码，然后输入</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd /root/yzmm/rel/GNB/cu/cu/nr_hl_cu/build ./run.sh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在第三个shell输入</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ssh root@192.168.2.246
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>再</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd /root/yzmm/rel/GNB/du/ran/DU/build/intel/du_bin/bin ./run.sh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><em>需要关掉ueransim，防止ip干扰冲突。</em></p>
+<p>然后添加端口映射38412，此处对amf修改无严格要求。</p>
+<img src="file:///C:/Users/wxy11/AppData/Local/Temp/msohtmlclip1/01/clip_image056.png" alt="img" style="zoom:67%;" />
+<p>添加upf网口<code>2152:2152 /udp</code>，经测试ue无法注册信号，产生mac相关报错，原因可能是free5gc默认和ueransim的对齐导致一些文件配置有问题。于是采用修改的核心网，工程文件来源于师兄<code>distributed-core-network-control-plane</code></p>
+<h1 id="写在结尾">写在结尾
+</h1><p>==特别鸣谢：江师兄、梁师兄和两位老师==</p>
+<p><strong>后期工作：</strong></p>
+<ul>
+<li>
+<p>梳理流程思路，抓包分析</p>
+</li>
+<li>
+<p>深入理解代码、规范、抓包工具；实体基站和软件ueransim的不同</p>
+</li>
+<li>
+<p>步进调试环境搭建</p>
+</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/wxyblog/p/bnns%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">BNNs入门学习</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2024-2028 - 
+        
+        2025 Xiangyu Wen
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/wxyblog/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<script>
+  const cdnPath = "https://cdn.jsdelivr.net/gh/Mosfish/stb@v1.5";
+  const tipsJsPath = "https://mosfish.github.io/wxyblog/waifu/waifu-tips.js"
+  const live2dJsPath = "https://mosfish.github.io/wxyblog/waifu/live2d.min.js"
+  const config = {
+    
+    path: {
+      homePath: "/",
+      modelPath: cdnPath + "/Resources/",
+      cssPath: cdnPath + "/waifu.css",
+      tipsJsonPath: cdnPath + "/waifu-tips.json",
+      tipsJsPath: cdnPath + "/waifu-tips.js",
+      live2dCorePath: cdnPath + "/Core/live2dcubismcore.js",
+      live2dSdkPath: cdnPath + "/live2d-sdk.js"
+    },
+    
+    tools: ["hitokoto", "asteroids", "express", "switch-model", "switch-texture", "photo", "info", "quit"],
+    
+    drag: {
+      enable: true,
+      direction: ["x", "y"]
+    },
+    
+    switchType: "order"
+  }
+
+  
+  if (screen.width >= 768) {
+    Promise.all([
+      loadExternalResource(config.path.cssPath, "css"),
+      loadExternalResource(config.path.live2dCorePath, "js"),
+      loadExternalResource(config.path.live2dSdkPath, "js"),
+      loadExternalResource(config.path.tipsJsPath, "js"),
+      loadExternalResource(live2dJsPath, "js")
+    ]).then(() => {
+      initWidget({
+        waifuPath: config.path.tipsJsonPath,
+        cdnPath: config.path.modelPath,
+        tools: config.tools,
+        dragEnable: config.drag.enable,
+        dragDirection: config.drag.direction,
+        switchType: config.switchType
+      });
+    });
+  }
+
+  
+  function loadExternalResource(url, type) {
+    return new Promise((resolve, reject) => {
+      let tag;
+      if (type === "css") {
+        tag = document.createElement("link");
+        tag.rel = "stylesheet";
+        tag.href = url;
+      }
+      else if (type === "js") {
+        tag = document.createElement("script");
+        tag.src = url;
+      }
+      if (tag) {
+        tag.onload = () => resolve(url);
+        tag.onerror = () => reject(url);
+        document.head.appendChild(tag);
+      }
+    });
+  }
+</script>
+<style>
+  body {
+    background: url(https://mosfish.github.io/wxyblog/background/bac.png) no-repeat center top;
+    background-size: cover;
+    background-attachment: fixed;
+  }
+  @font-face {
+    font-family: 'kk';
+    src: url(https://mosfish.github.io/wxyblog/font/suc.ttf) format('truetype');
+  }
+
+  :root {
+    --base-font-family: 'kk';
+    --code-font-family: 'kk';
+  }
+</style>
+
+    </body>
+</html>
