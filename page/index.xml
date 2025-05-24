@@ -8,7 +8,7 @@
         <language>zh-cn</language>
         <copyright>Xiangyu Wen</copyright>
         <lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://mosfish.github.io/wxyblog/page/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>归档</title>
+        <title>归档 | Archives</title>
         <link>https://mosfish.github.io/wxyblog/archives/</link>
         <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
         
@@ -16,11 +16,11 @@
         <description></description>
         </item>
         <item>
-        <title>关于</title>
-        <link>https://mosfish.github.io/wxyblog/%E5%85%B3%E4%BA%8E/</link>
+        <title>关于| About</title>
+        <link>https://mosfish.github.io/wxyblog/%E5%85%B3%E4%BA%8E-about/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>https://mosfish.github.io/wxyblog/%E5%85%B3%E4%BA%8E/</guid>
+        <guid>https://mosfish.github.io/wxyblog/%E5%85%B3%E4%BA%8E-about/</guid>
         <description>&lt;p&gt;欢迎来到我的Blog！我的个人主页在&lt;a class=&#34;link&#34; href=&#34;https://mosfish.github.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;XiangyuWEN&amp;rsquo;s Homepage&lt;/a&gt;，本blog是俺记录生活的地方，本人爱好摸鱼，坚定不移的认为工作是为了更好的摸鱼。&lt;/p&gt;
 &lt;blockquote&gt;
@@ -28,19 +28,19 @@
 </description>
         </item>
         <item>
-        <title>搜索</title>
+        <title>技术链接 | Links</title>
+        <link>https://mosfish.github.io/wxyblog/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5-links/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>https://mosfish.github.io/wxyblog/%E6%8A%80%E6%9C%AF%E9%93%BE%E6%8E%A5-links/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>搜索 | Search</title>
         <link>https://mosfish.github.io/wxyblog/search/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
         <guid>https://mosfish.github.io/wxyblog/search/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>友情链接&amp;网站</title>
-        <link>https://mosfish.github.io/wxyblog/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5%E7%BD%91%E7%AB%99/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>https://mosfish.github.io/wxyblog/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5%E7%BD%91%E7%AB%99/</guid>
         <description></description>
         </item>
         
